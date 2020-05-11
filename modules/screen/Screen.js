@@ -3,6 +3,13 @@ import Env from '../utils/environment/Env.js'
 
 export default class Screen 
 {
+    /**
+     * Canvas instance on page
+     * @constructor
+     * @param {number} width - Canvas width -> Default value 840.
+     * @param {number} height - Canvas height -> Default value 480.
+     * @param {string} name - Canvas identification -> "Screen".
+     */
     constructor(width = 840, height = 480, name = 'Screen')
     {
         this.X = 0
@@ -10,15 +17,18 @@ export default class Screen
         this.Width = width
         this.Height = height
 
-
+        // Creation of canvas and definition of properties
         this.__canvas = document.createElement('canvas')
         this.__canvas.setAttribute('id', name)
-        
-        this.__context = this.__canvas.getContext('2d')
-
+        this.__canvas.style.width = width
+        this.__canvas.style.height = height
+       
+        // Pixel density
         this.__canvas.width = width
         this.__canvas.height = height
 
+        // context canvas
+        this.__context = this.__canvas.getContext('2d')
         this.Context.fillStyle= '#000'
         this.Context.fillRect(0, 0, this.Width, this.Height)
 
@@ -26,7 +36,7 @@ export default class Screen
 
         this.__identification = Symbol('canvas')
 
-        Env.Global.set('screen', { width: this.Width, height: this.Height })
+        Env.Global.set('screen', { width: this.__canvas.width, height: this.__canvas.height })
         Env.Global.set('context', this.Context)
     }
 
@@ -43,14 +53,14 @@ export default class Screen
 
     get Width()
     {
-        return this.__width
+        return this?.__canvas?.width ?? this.__width
     }
 
     get Height()
     {
-        return this.__height
+        return this?.__canvas?.height ?? this.__height
     }
-
+    
     set X(x)
     {
         if(!x && x !== 0) throw 'Error: "Screen.X", undefined value'
@@ -58,7 +68,7 @@ export default class Screen
 
         this.__x = x;
     }
-
+    
     set Y(y)
     {
         if(!y && y !== 0) throw 'Error: "Screen.Y", undefined value'
@@ -105,6 +115,9 @@ export default class Screen
         if(!Numeric.isNumber(width)) throw 'Error: "Screen.PaddingPixelWidth" defines a numeric value'
         
         this.__canvas.width = width
+
+        Env.Global.set('screen', {width: this.__canvas.width, height: this.__canvas.height})
+    
     }
 
     set PixelDensityOfHeight(height)
@@ -113,7 +126,8 @@ export default class Screen
         if(!Numeric.isNumber(height)) throw 'Error: "Screen.PaddingPixelHeight", defines a numeric value'
 
         this.__canvas.height = height
-
+        
+        Env.Global.set('screen', {width: this.__canvas.width, height: this.__canvas.height})
         
     }
 
@@ -122,9 +136,15 @@ export default class Screen
         return this.__identification
     }
 
+    /**
+     * Returns a canvas with parameter-defined ID
+     * @static 
+     * @param {string} name ID of Canvas -> Default value "Screen"
+     *  
+     */
     static Canvas(name = 'Screen')
-    {
+    { 
         return document.getElementById(name) 
     }
-
+    
 }

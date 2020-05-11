@@ -7,10 +7,14 @@ export default class Game
     {
         throw 'class "Game" must not be instantiated'
     }  
-
+    
+    /**
+     * 
+     * @param {function} func Game loop function
+     * @param {number} framesPerSeconds Number of frames per second to be executed
+     */
     static Loop(func, framesPerSeconds = 60)
-    {
-        
+    {   
         let clock = {
             enable: false, 
             value: 0.0
@@ -37,17 +41,6 @@ export default class Game
         
     }
     
-    static Setting(...functions)
-    {
-        for(const func of functions)
-        {
-            if(typeof(func) !== 'function')
-                throw 'Error: "Game.Setting", you should only receive functions'
-
-            func()
-        }
-    }
-
     static get DeltaTime()
     {
         return Env.Global.get('clock')

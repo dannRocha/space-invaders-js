@@ -2,13 +2,14 @@
 
 import Screen from './modules/screen/Screen.js'
 import StartUp from './game/Game.js'
-import Render from './modules/render/Render.js'
 
-(async function(){
-    const screen = new Screen()
-        screen.PixelDensityOfHeight = 90
+(async function()
+{
+    const screen = new Screen(940, 580)
+        screen.PixelDensityOfHeight = 250
+        screen.PixelDensityOfWidth = 250
     
-    
+
     StartUp()
 
 })()

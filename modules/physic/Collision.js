@@ -5,13 +5,13 @@ export default class Collision
         throw 'class "Collision" must not be instantiated'
     }
 
-    static CollisionBetweenActors()
+    static CollisionBetweenGameObject()
     {
         
         return false
     }
 
-    static CollisionBetweenActorAndMap()
+    static CollisionBetweenGameObjectAndMap()
     {
 
 

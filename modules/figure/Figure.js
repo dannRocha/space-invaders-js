@@ -4,7 +4,10 @@ export default class Figure
     {
         throw 'class "Figure" must not be instantiated'
     }
-
+    /**
+     * 
+     * @param {string} src Image path 
+     */
     static LoadImage(src)
     {
         if(typeof(src) !== 'string') 

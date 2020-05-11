@@ -1,5 +1,5 @@
 import Numeric from '../utils/numeric/Numeric.js'
-
+import GameObject from '../gameObject/GameObject.js'
 
 function thereAreInvalidNumericValues(...parameters)
 {
@@ -18,7 +18,19 @@ export default class Render
         throw 'class "Render" must not be instantiated'
     }
 
-    
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} contextCanvas 
+     * @param {HTMLImageElement} image 
+     * @param {number} sx Internal X coordinate of the image
+     * @param {number} sy Internal Y coordinate of the image
+     * @param {number} sWidth Internal image width
+     * @param {number} sHeight Internal image height
+     * @param {number} dx X position of the image display
+     * @param {number} dy Y position of the image display
+     * @param {number} dWidth Image display width size 
+     * @param {number} dHeight Image display height size
+     */
     static DrawPicture( contextCanvas, image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) 
     {
         if(!contextCanvas || !contextCanvas.canvas) 
@@ -34,14 +46,49 @@ export default class Render
 
     }
 
-    static Text(contextCanvas, text, font)
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} contextCanvas 
+     * @param {HTMLImageElement} spritesheet 
+     * @param {GameObject} gameobject 
+     * @param {number} scale 
+     */
+    static RenderGameObject(contextCanvas, spritesheet, gameobject, scale = 1.0)
+    {
+        Render.DrawPicture
+        (
+            contextCanvas, spritesheet,
+            gameobject.SpriteSheetCoordinates[gameobject.CurrentSprite].x,
+            gameobject.SpriteSheetCoordinates[gameobject.CurrentSprite].y,
+            gameobject.Width, gameobject.Height, gameobject.X, gameobject.Y, 
+            (gameobject.Width * scale), (gameobject.Height * scale) 
+        )
+    }
+
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} contextCanvas 
+     * @param {object} font Font configuration. Exemple: {color: '#FFF', family: '10pt serif'}
+     * @param {number} x X coordinate of the text 
+     * @param {number} y Y coordinate of the text
+     * @param {string} text Message to be displayed 
+     * 
+     */
+    static Text(contextCanvas, font, x, y, text)
     {
         if(!contextCanvas || !contextCanvas.canvas) 
             throw 'Error: "Render.DrawPicture" needs the canvas context to render'
-
+        
+        contextCanvas.font = font.family
+        contextCanvas.fillStyle = font.color
+        contextCanvas.fillText(text, x, y)
             
     }
-
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} contextCanvas 
+     * @param {string} color Hex color. Exemple: '#FFF'
+     */
     static BackgroundColor(contextCanvas, color)
     {
         contextCanvas.fillStyle = color

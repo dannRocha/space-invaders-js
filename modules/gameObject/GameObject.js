@@ -81,47 +81,81 @@ export default class GameObject
     {
         return this.__spriteSheetCoordinates
     }
-
+    
+    get CurrentSprite()
+    {
+        return this.__currentSprite
+    }
 
     set X(x)
     {
-        if(!Numeric.isNumber(x)) throw 'Error: "Actor.X" defines a numeric value'
+        if(!Numeric.isNumber(x))
+        {
+            throw `Error: "${this.__name}.X" defines a numeric value`
+        }
         
         this.__x = x
     }
 
     set Y(y)
     {
-        if(!Numeric.isNumber(y)) throw 'Error: "Actor.Y" defines a numeric value'
+        if(!Numeric.isNumber(y)) 
+        {
+            throw `Error: "${this.__name}.Y" defines a numeric value`
+        }
         
         this.__y = y
     }
 
     set Width(width)
     {
-        if(!Numeric.isNumber(width)) throw 'Error: "Actor.Width" defines a numeric value'
+        if(!Numeric.isNumber(width)) 
+        {
+            throw `Error: "${this.__name}.Width" defines a numeric value`
+
+        }
         
         this.__width = width
     }
 
     set Height(height)
     {
-        if(!Numeric.isNumber(height)) throw 'Error: "Actor.Height" defines a numeric value'
+        if(!Numeric.isNumber(height))
+        {
+            throw `Error: "${this.__name}.Height" defines a numeric value`
+        } 
         
         this.__height = height
     }
 
+    set CurrentSprite(currentSprite)
+    {
+        if(!Numeric.isNumber(currentSprite))
+        {
+            throw `Error: "${this.__name}.CurrentSprite" defines a numeric value`
+        }
+
+        this.__currentSprite = currentSprite
+    }
+
     set Speed(speed)
     {
-        if(!Numeric.isNumber(speed)) throw `Error: "Actor.${this.__name}" defines a numeric value`
+        if(!Numeric.isNumber(speed)) 
+        {
+            throw `Error: "${this.__name}.Speed" defines a numeric value`
+        }
 
         this.__speed = speed
     }
-
+    /**
+     * @param {object} coord Object {x: 0, y: 0} 
+     */
     AddCoordSprite(coord)
     {
-        if(typeof(coord) !== 'object' || !isValidSpriteSheetCoordinates(coord.x, coord.y))
-            throw 'Error: "Actor.AddCoordSprite"'
+        if(typeof(coord) !== 'object' || !isValidSpriteSheetCoordinates(coord?.x, coord?.y))
+        {
+            throw `Error: "${this.__name}.AddCoordSprite" defines a object value: {x, y}`
+        }
 
         this.__spriteSheetCoordinates.push(coord)
     }

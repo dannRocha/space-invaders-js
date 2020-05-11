@@ -5,7 +5,7 @@ export default class Control
         throw 'class "Keyboard" must not be instantiated'
     }
 
-    static get Joystick()
+    static get Button()
     {
         return {
             ARROWLEFT: 37, ARROWTOP: 38,
@@ -41,9 +41,9 @@ export default class Control
         
         event = event.toLowerCase()
         
-        if( Control.EVENTS.KEYDOWN !== event && Joystick.EVENTS.KEYUP !== event )
+        if( Control.EVENTS.KEYDOWN !== event && Control.EVENTS.KEYUP !== event )
         {
-            throw 'Error: "Joystick.EVENTS" events not authorized'
+            throw 'Error: "Control.EVENTS" events not authorized'
         }   
         
 
