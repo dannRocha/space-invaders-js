@@ -1,6 +1,6 @@
-import Actor from '../../../modules/actor/Actor.js'
+import GameObject from '../../../modules/gameObject/GameObject.js'
 
-class Boss extends Actor
+class Boss extends GameObject
 {
     constructor(name)
     {

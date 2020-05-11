@@ -21,7 +21,7 @@ const ERROR = {
 }
 
 
-export default class Actor 
+export default class GameObject 
 {
     constructor(name)
     {

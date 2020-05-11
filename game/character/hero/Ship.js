@@ -1,6 +1,6 @@
-import Actor from '../../../modules/actor/Actor.js'
+import GameObject from '../../../modules/gameObject/GameObject.js'
 
-export default class Ship extends Actor
+export default class Ship extends GameObject
 {
     constructor(name)
     {

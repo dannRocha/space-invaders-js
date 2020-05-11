@@ -8,8 +8,8 @@ import Figure from '../modules/figure/Figure.js'
 import Game from '../modules/game/Game.js'
 
 const ship = new Ship('ship')
-const boss = new Boss('boss')
-const emenys = new Array()
+const boss = new Emeny('boss')
+const aliens = new Array()
 
 
 async function Setting()
@@ -30,7 +30,8 @@ async function Setting()
         boss.Y = 0
         boss.Width = 8
         boss.Height= 8
-        boss.Speed = 0.5        
+        boss.Speed = 0.5
+        boss.Pointer = 1_000
         boss.AddCoordSprite({x: 24, y: 8})
 
 }

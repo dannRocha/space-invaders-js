@@ -1,4 +1,5 @@
 import Numeric from '../utils/numeric/Numeric.js'
+import Env from '../utils/environment/Env.js'
 
 export default class Game 
 {
@@ -24,7 +25,8 @@ export default class Game
             
             clock.enable = true
             clock.value = timer
-            globalThis.__clock = {...clock }
+
+            Env.Global.set('clock', {...clock})
             
             func()
         
@@ -46,7 +48,8 @@ export default class Game
         }
     }
 
-    static get DeltaTime(){
-        return globalThis.__clock
+    static get DeltaTime()
+    {
+        return Env.Global.get('clock')
     }
 }
