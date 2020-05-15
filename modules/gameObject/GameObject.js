@@ -148,7 +148,7 @@ export default class GameObject
         this.__speed = speed
     }
     /**
-     * @param {object} coord Object {x: 0, y: 0} 
+     * @param {{x, y}} coord Object {x: 0, y: 0} 
      */
     AddCoordSprite(coord)
     {

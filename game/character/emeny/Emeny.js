@@ -7,24 +7,24 @@ class Emeny extends GameObject
     {
         super(name)
 
-        this.__pointer = 0
+        this.__score = 0
     }
 
 
-    get Pointer()
+    get Score()
     {
         return this.__pointer
     }
 
-    set Pointer(pointer)
+    set Score(score)
     {
 
-        if(!Numeric.isNumber(pointer))
+        if(!Numeric.isNumber(score))
         {
-            throw 'Error: "SET" -> "Emeny.Pointer" must be a number'
+            throw `Error: "SET" -> "${this.__name}.Score" must be a number`
         }
         
-        this.__pointer = pointer
+        this.__score = score
     }
 }
 
