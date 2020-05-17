@@ -10,16 +10,22 @@ export default class Game
     
     /**
      * 
-     * @param {function} func Game loop function
+     * @param {function} func func Game loop function
      * @param {number} framesPerSeconds Number of frames per second to be executed
-     */
-    static Loop(func, framesPerSeconds = 60)
+     * @param {boolean} running Racing game function control 
+     * @param {boolean} cancelRequestAnimationFrame Control of the RequestAnimationFrame function
+     */   
+    static Loop(func, framesPerSeconds = 60, running = true, cancelRequestAnimationFrame = false)
     {   
         let clock = {
             enable: false, 
             value: 0.0
         }
 
+        let now, elapsed
+        let then = Date.now()
+        let framesPerSecondsInterval = 1000 / framesPerSeconds
+        let IDOfAnimation = null
 
         if(!func || typeof(func) !== 'function') throw '"Game.Loop" function receives a mandatory function as a parameter'
         if(!Numeric.isNumber(framesPerSeconds)) throw '"framesperseconds" in "Game.Loop" must be numeric'
@@ -27,18 +33,35 @@ export default class Game
         function __loop(timer)
         {
             
-            clock.enable = true
+            clock.enable = running
             clock.value = timer
-
             Env.Global.set('clock', {...clock})
             
-            func()
-        
-            requestAnimationFrame(__loop)
+            IDOfAnimation = requestAnimationFrame(__loop)
+            
+            if(cancelRequestAnimationFrame)
+            {
+                cancelAnimationFrame(IDOfAnimation)
+            }
+
+            //Limit FPS
+            now = Date.now()
+            elapsed = now - then
+
+            if(elapsed > framesPerSecondsInterval)
+            {
+                then = now - (elapsed % framesPerSecondsInterval)
+                if(running)
+                {
+                    // running the game
+                    func()
+                }
+            }
+
         }
 
-        __loop()
-        
+        requestAnimationFrame(__loop)        
+    
     }
     
     static get DeltaTime()

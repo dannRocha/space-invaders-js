@@ -165,11 +165,18 @@ async function setting()
 
 async function startUp()
 {
+
+    const framePerSeconds = 30
+
     await setting()
 
-    Game.Loop(() => {
-        draw()
-    })
+    Game.Loop(() => main(), framePerSeconds)
+
+}
+
+function main()
+{
+    draw()
 }
 
 function draw()
