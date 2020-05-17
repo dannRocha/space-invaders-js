@@ -5,11 +5,13 @@ import Env from '../modules/utils/environment/Env.js'
 import Figure from '../modules/figure/Figure.js'
 import Game from '../modules/game/Game.js'
 import Render from '../modules/render/Render.js'
-
+import gameObject from '../modules/gameObject/GameObject.js'
+import Numeric from '../modules/utils/numeric/Numeric.js'
 
 const ship = new Ship('Ship')
 const boss = new Emeny('Boss')
 const aliens = new Array()
+const defense = new Array()
 
 
 function generateAliens()
@@ -75,6 +77,59 @@ function generateAliens()
     }
 }
 
+function generateDefense()
+{
+    /**
+     * 
+     * @param {number} positionX 
+     * @param {number} positionY 
+     */
+    function createDefenseSection(positionX, positionY)
+    {
+
+        if(!Numeric.isNumber(positionX) || !Numeric.isNumber(positionY))
+        {
+            throw new TypeError('"generateDefense -> createDefenseSection", "positionX" and "positionY" must be number')
+        }
+
+
+        const section = []
+        const QUANTITY_OF_LINES     = 3
+        const QUANTITY_OF_COLUMNS   = 4
+
+        
+        let i = 0
+        while (++i <= QUANTITY_OF_LINES)
+        {
+    
+            let row = []
+            let j = 0
+            while(++j <= QUANTITY_OF_COLUMNS)
+            {
+                const block = new gameObject('Block')
+                    block.Width     = 8
+                    block.Height    = 8
+                    block.X = (j * block.Width) + positionX
+                    block.Y = (i * block.Height) + positionY
+                    block.AddCoordSprite({x: 0, y: 0})
+    
+                row.push(block)
+            }
+    
+            section.push(row)
+        }
+    
+        return section
+    }
+
+    const sectionOne    = createDefenseSection(25, 170)
+    const sectionTwo    = createDefenseSection(105, 170)
+    const sectionThree  = createDefenseSection(180, 170)
+
+
+    defense.push(sectionOne, sectionTwo, sectionThree)
+}
+
 async function setting()
 {
     Env.Global.set('spritesheet', await Figure.LoadImage('../assets/img/invade.png'))
@@ -101,6 +156,11 @@ async function setting()
         // SETTING EMENY:ALIENS
         generateAliens()
 
+        // SETTING DEFENSE
+        generateDefense()
+        
+
+        window.d = defense
 }
 
 async function startUp()
@@ -127,6 +187,17 @@ function draw()
         for(let alien of lineOfAliens)
         {
             Render.RenderGameObject(contextCanvas, spritesheet, alien)
+        }
+    }
+
+    for(let sectionDefense of defense)
+    {
+        for(let lineOfBlocks of sectionDefense)
+        {
+            for(let block of lineOfBlocks)
+            {
+                Render.RenderGameObject(contextCanvas, spritesheet, block)
+            }
         }
     }
 
