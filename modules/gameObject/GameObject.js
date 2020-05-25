@@ -32,13 +32,15 @@ export default class GameObject
         this.__currentSprite = 0
         this.__spriteSheetCoordinates = []
         this.__speed = 0
-
+        this.__id = Numeric.Random()
         if(!name){
             throw ERROR.ID
             
         }
 
         this.__name = name
+
+        this.__typeOf = 'GameObject'
 
     }
 
@@ -85,6 +87,16 @@ export default class GameObject
     get CurrentSprite()
     {
         return this.__currentSprite
+    }
+
+    get TypeOf()
+    {
+        return this.__typeOf
+    }
+
+    get Id()
+    {
+        return this.__id
     }
 
     set X(x)
@@ -146,6 +158,16 @@ export default class GameObject
         }
 
         this.__speed = speed
+    }
+
+    set Id(id)
+    {
+        if(!Numeric.isNumber(id))
+        {
+            throw new TypeError(`Error: "SET" -> "${this.__name}.Id" must be a number`)
+        }
+
+        this.__id = id
     }
     /**
      * @param {{x, y}} coord Object {x: 0, y: 0} 

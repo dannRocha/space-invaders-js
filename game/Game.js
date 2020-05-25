@@ -1,17 +1,21 @@
-import Emeny from './character/emeny/Emeny.js'
-import Ship from './character/hero/Ship.js'
+import Actor from './character/Actor.js'
+import Bullet from './character/Bullet.js'
+import RemoveGameObjectsArrayById from './logic/RemoveGameObjectsArrayById.js'
 
+import Control from '../modules/control/Control.js'
 import Env from '../modules/utils/environment/Env.js'
 import Figure from '../modules/figure/Figure.js'
 import Game from '../modules/game/Game.js'
+import GameObject from '../modules/gameObject/GameObject.js'
+import Physic from '../modules/physic/Collision.js'
 import Render from '../modules/render/Render.js'
-import gameObject from '../modules/gameObject/GameObject.js'
 import Numeric from '../modules/utils/numeric/Numeric.js'
 
-const ship = new Ship('Ship')
-const boss = new Emeny('Boss')
-const aliens = new Array()
-const defense = new Array()
+
+let ship    = new Actor('Ship')
+let boss    = new Actor('Boss')
+let aliens  = new Array()
+let defense = new Array()
 
 
 function generateAliens()
@@ -36,7 +40,7 @@ function generateAliens()
         let coll = 0
         while(++coll <= COLL)
         {
-            const alien = new Emeny('Alien')
+            const alien = new Actor('Alien')
 
                 // SETTING EMENY:ALIEN
                 alien.X = coord.x * margin
@@ -106,7 +110,7 @@ function generateDefense()
             let j = 0
             while(++j <= QUANTITY_OF_COLUMNS)
             {
-                const block = new gameObject('Block')
+                const block = new GameObject('Block')
                     block.Width     = 8
                     block.Height    = 8
                     block.X = (j * block.Width) + positionX
@@ -140,16 +144,17 @@ async function setting()
         ship.Y = parseInt(Env.Global.get('screen').height - 32)
         ship.Width = 8
         ship.Height= 8
-        ship.Speed = 0.5
+        ship.Speed = 5
         ship.Score = -1_000
         ship.AddCoordSprite({x: 0, y: 8})
 
         // SETTING EMENY:BOSS
-        boss.X = 0
+        boss.X = parseInt(Env.Global.get('screen').width)
         boss.Y = 10
         boss.Width = 8
         boss.Height= 8
-        boss.Speed = 0.5
+        boss.Speed = 0.8
+        boss.Sense = -1
         boss.Score = 1_000
         boss.AddCoordSprite({x: 24, y: 8})
 
@@ -159,8 +164,9 @@ async function setting()
         // SETTING DEFENSE
         generateDefense()
         
-
-        window.d = defense
+        // SETTING JOYSTICK
+        Control.AddEvent(Control.EVENTS.KEYDOWN, joystick)
+        Control.AddEvent(Control.EVENTS.KEYUP, joystick)
 }
 
 async function startUp()
@@ -177,18 +183,16 @@ async function startUp()
 function main()
 {
     draw()
+    update()
 }
 
 function draw()
 {
     const contextCanvas = Env.Global.get('context')
     const spritesheet   = Env.Global.get('spritesheet')
-
+    
     Render.BackgroundColor(contextCanvas, '#000')
-
-    Render.RenderGameObject(contextCanvas, spritesheet, boss)
-    Render.RenderGameObject(contextCanvas, spritesheet, ship)
-
+    
     for(let lineOfAliens of aliens)
     {
         for(let alien of lineOfAliens)
@@ -203,10 +207,18 @@ function draw()
         {
             for(let block of lineOfBlocks)
             {
-                Render.RenderGameObject(contextCanvas, spritesheet, block)
+                Render.RenderGameObject(contextCanvas, spritesheet, block) 
             }
         }
     }
+    
+    for(const bullet of ship.Bullets)
+    {
+        Render.RenderGameObject(contextCanvas, spritesheet, bullet)
+    }
+    
+    Render.RenderGameObject(contextCanvas, spritesheet, boss)
+    Render.RenderGameObject(contextCanvas, spritesheet, ship)
 
     Render.Text
     (
@@ -215,6 +227,104 @@ function draw()
         0, Env.Global.get('screen').width - 8, // POSITION
         `SCORE : ${Env.Global.get('score')}`   // MESSAGE
     )
+}
+
+function update()
+{
+    const MILLISECONDS      = 1_000
+    const ROUTE_SIZE        = 300
+    const ADJUST_TO_CENTER  = 120
+    const DELTA_T           = Math.sin(Env.Global.get('clock').value / MILLISECONDS)
+    
+    if(ship.Speed) ship.X += ship.Speed * ship.Sense
+    if(boss.Speed) boss.X = (DELTA_T * ROUTE_SIZE + ADJUST_TO_CENTER) * boss.Speed
+    
+    for(const bullet of [ ...ship.Bullets ])
+    {
+        bullet.Y -= bullet.Sense * bullet.Speed
+
+        if(bullet.Y + bullet.Height < 0) ship.RemoveBullets()
+        
+        if(Physic.CollisionBetweenGameObject(boss, bullet))
+        {
+            boss.Speed = 0
+            boss.X = Env.Global.get('screen').width
+            RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
+        }
+
+        for(let sectionDefense of defense)
+        {
+            for(let lineOfBlocks of sectionDefense)
+            {
+                for(let block of lineOfBlocks)
+                {
+                    if(Physic.CollisionBetweenGameObject(bullet, block))
+                    {
+                        RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
+                        RemoveGameObjectsArrayById(defense, block.Id)
+                    }   
+                }
+            }
+        }
+    
+
+        for(let lineOfAliens of [...aliens])
+        {
+            let check = false
+
+            for(let alien of lineOfAliens)
+            {
+                if(Physic.CollisionBetweenGameObject(bullet, alien))
+                {  
+                    RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
+                    RemoveGameObjectsArrayById(aliens, alien.Id)
+                    
+                    check = true
+                    break
+                }
+            }
+
+            if(check) break
+        }
+    }
+
+}
+
+function joystick(keycode, event)
+{
+    const SPACE_BETWEEN_BULLETS = 50
+
+    //KEYDOWN
+    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.A) ship.Sense = -1
+    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.D) ship.Sense =  1
+    
+    //KEYUP
+    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.A) ship.Sense = 0
+    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.D) ship.Sense = 0
+    
+    // BULLETS KEY
+    if (  event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.SPACEBAR
+        ||event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.W
+    )
+    {   
+        // ADD SPACE BETWEEN BULLETS
+        if(ship.Bullets[ship.Bullets.length - 1]?.Y  + SPACE_BETWEEN_BULLETS > ship.Y)
+        {
+            return
+        }
+
+
+        const bullet = new Bullet('Bullet-Spaceship')
+              bullet.X = ship.X
+              bullet.Y = ship.Y
+              bullet.Width  = 8
+              bullet.Height = 8
+              bullet.Speed =  8
+              bullet.Sense =  1
+              bullet.AddCoordSprite({x: 8, y: 8})
+
+        ship.AddBullets(bullet)
+    }
 }
 
 export default startUp

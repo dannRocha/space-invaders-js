@@ -36,8 +36,20 @@ export default class Screen
 
         this.__identification = Symbol('canvas')
 
-        Env.Global.set('screen', { width: this.__canvas.width, height: this.__canvas.height })
+        Env.Global.set('canvas', this.Canvas)
+
         Env.Global.set('context', this.Context)
+        
+        Env.Global.set('screen', {
+            width: this.__canvas.width, 
+            height: this.__canvas.height
+        })
+        
+        Env.Global.set('debbuger', {
+            collision: false,
+            outline: false,
+            console: false
+        })
     }
 
 

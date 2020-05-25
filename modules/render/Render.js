@@ -1,5 +1,6 @@
-import Numeric from '../utils/numeric/Numeric.js'
+import Env from '../utils/environment/Env.js'
 import GameObject from '../gameObject/GameObject.js'
+import Numeric from '../utils/numeric/Numeric.js'
 
 function thereAreInvalidNumericValues(...parameters)
 {
@@ -93,5 +94,15 @@ export default class Render
     {
         contextCanvas.fillStyle = color
         contextCanvas.fillRect(0, 0, contextCanvas.canvas.width, contextCanvas.canvas.height)
+    }
+
+    static Rect(contextCanvas, gameObject, color = '#FFF', lineWidth = 1)
+    {
+
+        contextCanvas.beginPath()
+        contextCanvas.strokeStyle = color
+        contextCanvas.lineWidth = lineWidth
+        contextCanvas.rect(gameObject.X, gameObject.Y, gameObject.Width, gameObject.Height)
+        contextCanvas.stroke()
     }
 }
