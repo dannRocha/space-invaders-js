@@ -16,7 +16,10 @@ let ship    = new Actor('Ship')
 let boss    = new Actor('Boss')
 let aliens  = new Array()
 let defense = new Array()
+let alienBullets = new Array()
 
+
+window.alien = aliens
 
 function generateAliens()
 {
@@ -216,9 +219,15 @@ function draw()
     {
         Render.RenderGameObject(contextCanvas, spritesheet, bullet)
     }
+
+    for(const bullet of alienBullets)
+    {
+        Render.RenderGameObject(contextCanvas, spritesheet, bullet)
+    }
     
     Render.RenderGameObject(contextCanvas, spritesheet, boss)
     Render.RenderGameObject(contextCanvas, spritesheet, ship)
+
 
     Render.Text
     (
@@ -235,13 +244,16 @@ function update()
     const ROUTE_SIZE        = 300
     const ADJUST_TO_CENTER  = 120
     const DELTA_T           = Math.sin(Env.Global.get('clock').value / MILLISECONDS)
-    
+        
+
+
     if(ship.Speed) ship.X += ship.Speed * ship.Sense
     if(boss.Speed) boss.X = (DELTA_T * ROUTE_SIZE + ADJUST_TO_CENTER) * boss.Speed
-    
+
+
     for(const bullet of [ ...ship.Bullets ])
     {
-        bullet.Y -= bullet.Sense * bullet.Speed
+        bullet.Y += bullet.Sense * bullet.Speed
 
         if(bullet.Y + bullet.Height < 0) ship.RemoveBullets()
         
@@ -271,9 +283,17 @@ function update()
         for(let lineOfAliens of [...aliens])
         {
             let check = false
+            console.log(lineOfAliens.length)
+            if(!lineOfAliens.length)
+            {
+                aliens = aliens.filter(array => !!array.length)
+                debugger
+                continue
+            }
 
             for(let alien of lineOfAliens)
             {
+
                 if(Physic.CollisionBetweenGameObject(bullet, alien))
                 {  
                     RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
@@ -285,6 +305,18 @@ function update()
             }
 
             if(check) break
+        }
+    }
+    
+    window.bul = alienBullets
+
+    for(const bullet of [ ...alienBullets ])
+    {
+        bullet.Y += bullet.Sense * bullet.Speed
+
+        if(bullet.Y >= Env.Global.get('screen').height)
+        {
+            RemoveGameObjectsArrayById(alienBullets, bullet.Id)
         }
     }
 
@@ -320,10 +352,35 @@ function joystick(keycode, event)
               bullet.Width  = 8
               bullet.Height = 8
               bullet.Speed =  8
-              bullet.Sense =  1
+              bullet.Sense =  -1
               bullet.AddCoordSprite({x: 8, y: 8})
 
         ship.AddBullets(bullet)
+    }
+
+    if( event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.X )
+    {
+
+        let axisX = Math.floor(Math.random() * aliens.length)
+        let axisY = Math.floor(Math.random() * aliens[axisX].length)
+        
+        try{
+            const bullet = new Bullet('Bullet-Aliens')
+                bullet.X = aliens[axisX][axisY].X
+                bullet.Y = aliens[axisX][axisY].Y
+                bullet.Width  =  8
+                bullet.Height =  8
+                bullet.Speed  =  8
+                bullet.Sense  = 1
+                bullet.AddCoordSprite({x: 8, y: 8})
+    
+                alienBullets.push(bullet)
+
+        }
+        catch(err)
+        {
+            console.error(`Index: [${axisX}][${axisY}]`)
+        }
     }
 }
 
