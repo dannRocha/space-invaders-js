@@ -18,8 +18,7 @@ let aliens  = new Array()
 let defense = new Array()
 let alienBullets = new Array()
 
-
-window.alien = aliens
+window.aliens = aliens
 
 function generateAliens()
 {
@@ -245,7 +244,7 @@ function update()
     const ADJUST_TO_CENTER  = 120
     const DELTA_T           = Math.sin(Env.Global.get('clock').value / MILLISECONDS)
         
-
+    
 
     if(ship.Speed) ship.X += ship.Speed * ship.Sense
     if(boss.Speed) boss.X = (DELTA_T * ROUTE_SIZE + ADJUST_TO_CENTER) * boss.Speed
@@ -280,16 +279,10 @@ function update()
         }
     
 
-        for(let lineOfAliens of [...aliens])
+        for(let lineOfAliens of aliens)
         {
             let check = false
-            console.log(lineOfAliens.length)
-            if(!lineOfAliens.length)
-            {
-                aliens = aliens.filter(array => !!array.length)
-                debugger
-                continue
-            }
+
 
             for(let alien of lineOfAliens)
             {
@@ -300,6 +293,7 @@ function update()
                     RemoveGameObjectsArrayById(aliens, alien.Id)
                     
                     check = true
+
                     break
                 }
             }
@@ -308,9 +302,8 @@ function update()
         }
     }
     
-    window.bul = alienBullets
 
-    for(const bullet of [ ...alienBullets ])
+    for(const bullet of alienBullets)
     {
         bullet.Y += bullet.Sense * bullet.Speed
 
@@ -361,26 +354,42 @@ function joystick(keycode, event)
     if( event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.X )
     {
 
-        let axisX = Math.floor(Math.random() * aliens.length)
-        let axisY = Math.floor(Math.random() * aliens[axisX].length)
-        
-        try{
-            const bullet = new Bullet('Bullet-Aliens')
-                bullet.X = aliens[axisX][axisY].X
-                bullet.Y = aliens[axisX][axisY].Y
-                bullet.Width  =  8
-                bullet.Height =  8
-                bullet.Speed  =  8
-                bullet.Sense  = 1
-                bullet.AddCoordSprite({x: 8, y: 8})
-    
-                alienBullets.push(bullet)
+        // let axisX = Math.floor(Math.random() * aliens.length)
+        // let axisY = Math.floor(Math.random() * aliens[axisX].length)
+
+        let axisX
+        let axisY
+
+        for(let i = 0; i < aliens.length; i++)
+        {
+            if(aliens[i].length) break
+            else if(!aliens[i].length && i == aliens.length - 1) return
+        }
+
+        while(true)
+        {
+            axisX = Math.floor(Math.random() * aliens.length)
+            axisY = Math.floor(Math.random() * aliens[axisX].length)
+
+            if(axisY && axisY)
+            {
+                break
+            }
 
         }
-        catch(err)
-        {
-            console.error(`Index: [${axisX}][${axisY}]`)
-        }
+        
+        
+        const bullet = new Bullet('Bullet-Aliens')
+            bullet.X = aliens[axisX][axisY].X
+            bullet.Y = aliens[axisX][axisY].Y
+            bullet.Width  =  8
+            bullet.Height =  8
+            bullet.Speed  =  8
+            bullet.Sense  = 1
+            bullet.AddCoordSprite({x: 8, y: 8})
+
+            alienBullets.push(bullet)
+
     }
 }
 
