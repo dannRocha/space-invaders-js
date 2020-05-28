@@ -18,7 +18,6 @@ let aliens  = new Array()
 let defense = new Array()
 let alienBullets = new Array()
 
-window.aliens = aliens
 
 function generateAliens()
 {
@@ -292,6 +291,11 @@ function update()
                     RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
                     RemoveGameObjectsArrayById(aliens, alien.Id)
                     
+                    if(!lineOfAliens.length)
+                    {
+                        aliens = aliens.filter(line => !!line.length)
+                    }
+
                     check = true
 
                     break
@@ -354,29 +358,11 @@ function joystick(keycode, event)
     if( event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.X )
     {
 
-        // let axisX = Math.floor(Math.random() * aliens.length)
-        // let axisY = Math.floor(Math.random() * aliens[axisX].length)
+        if( !aliens.length ) return
 
-        let axisX
-        let axisY
+        let axisX = Math.floor(Math.random() * aliens.length)
+        let axisY = Math.floor(Math.random() * aliens[axisX].length)
 
-        for(let i = 0; i < aliens.length; i++)
-        {
-            if(aliens[i].length) break
-            else if(!aliens[i].length && i == aliens.length - 1) return
-        }
-
-        while(true)
-        {
-            axisX = Math.floor(Math.random() * aliens.length)
-            axisY = Math.floor(Math.random() * aliens[axisX].length)
-
-            if(axisY && axisY)
-            {
-                break
-            }
-
-        }
         
         
         const bullet = new Bullet('Bullet-Aliens')
