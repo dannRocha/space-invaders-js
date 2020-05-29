@@ -315,6 +315,22 @@ function update()
         {
             RemoveGameObjectsArrayById(alienBullets, bullet.Id)
         }
+
+    
+        for(let sectionDefense of defense)
+        {
+            for(let lineOfBlocks of sectionDefense)
+            {
+                for(let block of lineOfBlocks)
+                {
+                    if(Physic.CollisionBetweenGameObject(bullet, block))
+                    {
+                        RemoveGameObjectsArrayById(alienBullets, bullet.Id)
+                        RemoveGameObjectsArrayById(defense, block.Id)
+                    }   
+                }
+            }
+        }
     }
 
 }
@@ -343,14 +359,14 @@ function joystick(keycode, event)
         }
 
 
-        const bullet = new Bullet('Bullet-Spaceship')
-              bullet.X = ship.X
-              bullet.Y = ship.Y
-              bullet.Width  = 8
-              bullet.Height = 8
-              bullet.Speed =  8
-              bullet.Sense =  -1
-              bullet.AddCoordSprite({x: 8, y: 8})
+        let bullet = new Bullet('Bullet-Spaceship')
+            bullet.X = ship.X
+            bullet.Y = ship.Y
+            bullet.Width  = 8
+            bullet.Height = 8
+            bullet.Speed =  8
+            bullet.Sense =  -1
+            bullet.AddCoordSprite({x: 8, y: 8})
 
         ship.AddBullets(bullet)
     }
@@ -365,7 +381,7 @@ function joystick(keycode, event)
 
         
         
-        const bullet = new Bullet('Bullet-Aliens')
+        let bullet = new Bullet('Bullet-Aliens')
             bullet.X = aliens[axisX][axisY].X
             bullet.Y = aliens[axisX][axisY].Y
             bullet.Width  =  8
