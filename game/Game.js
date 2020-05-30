@@ -1,15 +1,16 @@
 import Actor from './character/Actor.js'
 import Bullet from './character/Bullet.js'
+import generateAliens from './logic/generators/generateAliens.js'
+import generateDefense from './logic/generators/generateDefense.js'
+import moveAliens from './logic/moviment/moveAliens.js'
 import RemoveGameObjectsArrayById from './logic/RemoveGameObjectsArrayById.js'
 
 import Control from '../modules/control/Control.js'
 import Env from '../modules/utils/environment/Env.js'
 import Figure from '../modules/figure/Figure.js'
 import Game from '../modules/game/Game.js'
-import GameObject from '../modules/gameObject/GameObject.js'
 import Physic from '../modules/physic/Collision.js'
 import Render from '../modules/render/Render.js'
-import Numeric from '../modules/utils/numeric/Numeric.js'
 
 
 let ship    = new Actor('Ship')
@@ -17,123 +18,7 @@ let boss    = new Actor('Boss')
 let aliens  = new Array()
 let defense = new Array()
 let alienBullets = new Array()
-
-
-function generateAliens()
-{
-    let score = 10
-    const COLL = 18
-    const ROWS = 6
-
-    const coord = {x: 0, y: 0}
-    const coordSprite = {x: 0, y: 0}
-
-
-    let row = 0
-    while(++row <= ROWS)
-    {
-        const emeny = []
-        const margin= 1.5
-        const spaceBetween = 30
-
-        coord.x = 0
-
-        let coll = 0
-        while(++coll <= COLL)
-        {
-            const alien = new Actor('Alien')
-
-                // SETTING EMENY:ALIEN
-                alien.X = coord.x * margin
-                alien.Y = coord.y * margin + spaceBetween
-                alien.Width  = 8
-                alien.Height = 8
-                alien.Score = score
-                alien.Speed = 0.5
-
-                // Sprite mapping: sprite 1
-                alien.AddCoordSprite
-                (
-                    {
-                        x: coordSprite.x * 2,
-                        y: coordSprite.y
-                    }
-                )
-                // Sprite mapping: sprite 2
-                alien.AddCoordSprite
-                (
-                    {
-                        x: (row * 16 - 8),
-                        y: coordSprite.y
-                    }
-                )
-
-            emeny.push(alien)
-
-            coord.x += 8
-
-        }
-
-        coord.y += 8
-        coordSprite.x += 8
-
-        score += 5
-        aliens.push([...emeny])
-    }
-}
-
-function generateDefense()
-{
-    /**
-     * 
-     * @param {number} positionX 
-     * @param {number} positionY 
-     */
-    function createDefenseSection(positionX, positionY)
-    {
-
-        if(!Numeric.isNumber(positionX) || !Numeric.isNumber(positionY))
-        {
-            throw new TypeError('"generateDefense -> createDefenseSection", "positionX" and "positionY" must be number')
-        }
-
-
-        const section = []
-        const QUANTITY_OF_LINES     = 3
-        const QUANTITY_OF_COLUMNS   = 4
-
-        
-        let i = 0
-        while (++i <= QUANTITY_OF_LINES)
-        {
     
-            let row = []
-            let j = 0
-            while(++j <= QUANTITY_OF_COLUMNS)
-            {
-                const block = new GameObject('Block')
-                    block.Width     = 8
-                    block.Height    = 8
-                    block.X = (j * block.Width) + positionX
-                    block.Y = (i * block.Height) + positionY
-                    block.AddCoordSprite({x: 0, y: 0})
-    
-                row.push(block)
-            }
-    
-            section.push(row)
-        }
-    
-        return section
-    }
-
-    const sectionOne    = createDefenseSection(25, 170)
-    const sectionTwo    = createDefenseSection(105, 170)
-    const sectionThree  = createDefenseSection(180, 170)
-
-
-    defense.push(sectionOne, sectionTwo, sectionThree)
-}
 
 async function setting()
 {
@@ -146,6 +31,7 @@ async function setting()
         ship.Width = 8
         ship.Height= 8
         ship.Speed = 5
+        ship.Lives = 3
         ship.Score = -1_000
         ship.AddCoordSprite({x: 0, y: 8})
 
@@ -156,14 +42,16 @@ async function setting()
         boss.Height= 8
         boss.Speed = 0.8
         boss.Sense = -1
+        boss.Lives = 2
         boss.Score = 1_000
         boss.AddCoordSprite({x: 24, y: 8})
 
         // SETTING EMENY:ALIENS
-        generateAliens()
-
+        aliens  = generateAliens() 
+        
         // SETTING DEFENSE
-        generateDefense()
+        defense = generateDefense()
+        
         
         // SETTING JOYSTICK
         Control.AddEvent(Control.EVENTS.KEYDOWN, joystick)
@@ -238,12 +126,13 @@ function draw()
 
 function update()
 {
-    const MILLISECONDS      = 1_000
+    const MILLISECONDS      = 2_000
     const ROUTE_SIZE        = 300
     const ADJUST_TO_CENTER  = 120
     const DELTA_T           = Math.sin(Env.Global.get('clock').value / MILLISECONDS)
         
-    
+    aliens = moveAliens(aliens)
+
 
     if(ship.Speed) ship.X += ship.Speed * ship.Sense
     if(boss.Speed) boss.X = (DELTA_T * ROUTE_SIZE + ADJUST_TO_CENTER) * boss.Speed
@@ -257,8 +146,13 @@ function update()
         
         if(Physic.CollisionBetweenGameObject(boss, bullet))
         {
-            boss.Speed = 0
-            boss.X = Env.Global.get('screen').width
+            boss.Lives--
+            if(!boss.Lives)
+            {
+                boss.Speed = 0
+                boss.X = Env.Global.get('screen').width
+            }
+
             RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
         }
 
@@ -269,9 +163,14 @@ function update()
                 for(let block of lineOfBlocks)
                 {
                     if(Physic.CollisionBetweenGameObject(bullet, block))
-                    {
+                    {   
+                        block.Resistance--
+                        if(!block.Resistance)
+                        {
+                            RemoveGameObjectsArrayById(defense, block.Id)
+                        }
+                        
                         RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
-                        RemoveGameObjectsArrayById(defense, block.Id)
                     }   
                 }
             }
@@ -281,7 +180,6 @@ function update()
         for(let lineOfAliens of aliens)
         {
             let check = false
-
 
             for(let alien of lineOfAliens)
             {
@@ -294,6 +192,7 @@ function update()
                     if(!lineOfAliens.length)
                     {
                         aliens = aliens.filter(line => !!line.length)
+                       
                     }
 
                     check = true
@@ -311,12 +210,20 @@ function update()
     {
         bullet.Y += bullet.Sense * bullet.Speed
 
+
+        // Remove bullet when leaving the canvas boundaries
         if(bullet.Y >= Env.Global.get('screen').height)
         {
             RemoveGameObjectsArrayById(alienBullets, bullet.Id)
         }
 
-    
+        // Check collision with alien bullets and spaceship
+        if(Physic.CollisionBetweenGameObject(bullet, ship))
+        {
+            RemoveGameObjectsArrayById(alienBullets, bullet.Id)
+        }
+
+        // Check collision with alien bullets and defense
         for(let sectionDefense of defense)
         {
             for(let lineOfBlocks of sectionDefense)
@@ -326,7 +233,13 @@ function update()
                     if(Physic.CollisionBetweenGameObject(bullet, block))
                     {
                         RemoveGameObjectsArrayById(alienBullets, bullet.Id)
-                        RemoveGameObjectsArrayById(defense, block.Id)
+                        block.Resistance--
+
+                        if(!block.Resistance)
+                        {
+                            RemoveGameObjectsArrayById(defense, block.Id)
+                        }
+                        
                     }   
                 }
             }

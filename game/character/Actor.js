@@ -3,11 +3,15 @@ import Numeric from '../../modules/utils/numeric/Numeric.js'
 
 export default class Actor extends GameObject
 {
+    /**
+     * 
+     * @param {string} name 
+     */
     constructor(name)
     {
         super(name)
         this.__bullets = []
-        this.__live = 0
+        this.__lives = 0
         this.__score = 0
         this.__sense = 0
     }
@@ -17,9 +21,9 @@ export default class Actor extends GameObject
         return this.__bullets
     }
 
-    get Live()
+    get Lives()
     {
-        return this.__live
+        return this.__lives
     }
 
     get Score()
@@ -32,14 +36,14 @@ export default class Actor extends GameObject
         return this.__sense
     }
 
-    set Live(live)
+    set Lives(lives)
     {
-        if(!Numeric.isNumber(live))
+        if(!Numeric.isNumber(lives))
         {
             throw new TypeError(`Error: "${this.__name}.Live" defines a numeric value`)
         }
 
-        this.__live = live
+        this.__lives = lives
     }
 
     set Score(score)
@@ -69,7 +73,6 @@ export default class Actor extends GameObject
      */
     AddBullets(bullet)
     {
-
         if(bullet?.TypeOf !== 'GameObject')
         {
             throw new TypeError(`Error: "SET" -> "${this.__name}.AddBullets" must be a GameObject`)
