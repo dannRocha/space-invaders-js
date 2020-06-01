@@ -1,7 +1,7 @@
 import { Actor, Bullet } from './character/mod.js'
 import { generateAliens, generateDefense } from './logic/generators/mod.js'
 import { moveAliens } from './logic/moviment/mod.js'
-import removeGameObjectsArrayById from './logic/mechanics/removeGameObjectsArrayById.js'
+import { removeGameObjectsArrayById } from './logic/mechanics/mod.js'
 
 import { Collision, Control, Env, Figure, Game, Render } from '../modules/mod.js'
 
