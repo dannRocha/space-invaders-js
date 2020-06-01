@@ -1,1 +1,1 @@
-export { default as removeGameObjectArrayById } from './removeGameObjectsArrayById.js'
+export { default as removeGameObjectsArrayById } from './removeGameObjectsArrayById.js'
