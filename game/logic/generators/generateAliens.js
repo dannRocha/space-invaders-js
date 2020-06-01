@@ -1,4 +1,4 @@
-import Actor from '../../character/Actor.js'
+import { Actor } from '../../character/mod.js'
 
 /**
  * Creates and configures alien 'Actors'

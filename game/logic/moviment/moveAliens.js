@@ -1,5 +1,5 @@
-import Env from '../../../modules/utils/environment/Env.js'
-import Actor from '../../character/Actor.js';
+import { Env } from '../../../modules/mod.js'
+import { Actor } from '../../character/mod.js';
 
 /**
  * 

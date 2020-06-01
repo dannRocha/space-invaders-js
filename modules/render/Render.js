@@ -1,6 +1,4 @@
-import Env from '../utils/environment/Env.js'
-import GameObject from '../gameObject/GameObject.js'
-import Numeric from '../utils/numeric/Numeric.js'
+import { GameObject, Numeric } from '../mod.js'
 
 function thereAreInvalidNumericValues(...parameters)
 {

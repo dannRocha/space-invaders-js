@@ -1,6 +1,4 @@
-import GameObject from '../gameObject/GameObject.js'
-import Render from '../render/Render.js'
-import Env from '../utils/environment/Env.js'
+import { GameObject } from '../mod.js'
 
 
 export default class Collision 
