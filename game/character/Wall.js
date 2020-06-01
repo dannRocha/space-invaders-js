@@ -1,5 +1,4 @@
-import GameObject from '../../modules/gameObject/GameObject.js'
-import Numeric from '../../modules/utils/numeric/Numeric.js'
+import { GameObject, Numeric } from '../../modules/mod.js'
 
 export default class Wall extends GameObject
 {

@@ -1,16 +1,9 @@
-import Actor from './character/Actor.js'
-import Bullet from './character/Bullet.js'
-import generateAliens from './logic/generators/generateAliens.js'
-import generateDefense from './logic/generators/generateDefense.js'
+import { Actor, Bullet } from './character/mod.js'
+import { generateAliens, generateDefense } from './logic/generators/mod.js'
 import moveAliens from './logic/moviment/moveAliens.js'
-import RemoveGameObjectsArrayById from './logic/RemoveGameObjectsArrayById.js'
+import RemoveGameObjectsArrayById from './logic/mechanics/RemoveGameObjectsArrayById.js'
 
-import Control from '../modules/control/Control.js'
-import Env from '../modules/utils/environment/Env.js'
-import Figure from '../modules/figure/Figure.js'
-import Game from '../modules/game/Game.js'
-import Physic from '../modules/physic/Collision.js'
-import Render from '../modules/render/Render.js'
+import { Collision, Control, Env, Figure, Game, Render } from '../modules/mod.js'
 
 
 let ship    = new Actor('Ship')
@@ -144,7 +137,7 @@ function update()
 
         if(bullet.Y + bullet.Height < 0) ship.RemoveBullets()
         
-        if(Physic.CollisionBetweenGameObject(boss, bullet))
+        if(Collision.CollisionBetweenGameObject(boss, bullet))
         {
             boss.Lives--
             if(!boss.Lives)
@@ -162,7 +155,7 @@ function update()
             {
                 for(let block of lineOfBlocks)
                 {
-                    if(Physic.CollisionBetweenGameObject(bullet, block))
+                    if(Collision.CollisionBetweenGameObject(bullet, block))
                     {   
                         block.Resistance--
                         if(!block.Resistance)
@@ -184,7 +177,7 @@ function update()
             for(let alien of lineOfAliens)
             {
 
-                if(Physic.CollisionBetweenGameObject(bullet, alien))
+                if(Collision.CollisionBetweenGameObject(bullet, alien))
                 {  
                     RemoveGameObjectsArrayById(ship.Bullets, bullet.Id)
                     RemoveGameObjectsArrayById(aliens, alien.Id)
@@ -218,7 +211,7 @@ function update()
         }
 
         // Check collision with alien bullets and spaceship
-        if(Physic.CollisionBetweenGameObject(bullet, ship))
+        if(Collision.CollisionBetweenGameObject(bullet, ship))
         {
             RemoveGameObjectsArrayById(alienBullets, bullet.Id)
         }
@@ -230,7 +223,7 @@ function update()
             {
                 for(let block of lineOfBlocks)
                 {
-                    if(Physic.CollisionBetweenGameObject(bullet, block))
+                    if(Collision.CollisionBetweenGameObject(bullet, block))
                     {
                         RemoveGameObjectsArrayById(alienBullets, bullet.Id)
                         block.Resistance--

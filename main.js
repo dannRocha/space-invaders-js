@@ -1,6 +1,6 @@
 'use strict'
 
-import Screen from './modules/screen/Screen.js'
+import { Screen } from './modules/mod.js'
 import startUp from './game/Game.js'
 
 (async function()
