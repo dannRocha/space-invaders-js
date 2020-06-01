@@ -1,5 +1,5 @@
-import Wall from '../../character/Wall.js'
-import Numeric from '../../../modules/utils/numeric/Numeric.js'
+import { Wall } from '../../character/mod.js'
+import { Numeric } from '../../../modules/mod.js'
 
 /**
  * Creates and configures defense blocks

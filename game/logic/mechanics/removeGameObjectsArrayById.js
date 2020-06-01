@@ -1,4 +1,4 @@
-import GameObject from "../../../modules/gameObject/GameObject.js";
+import { GameObject } from "../../../modules/mod.js"
 
 /**
  * 

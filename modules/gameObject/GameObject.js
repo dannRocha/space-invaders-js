@@ -1,4 +1,4 @@
-import Numeric from '../utils/numeric/Numeric.js'
+import { Numeric } from '../mod.js'
 
 function isValidSpriteSheetCoordinates(...coords)
 {

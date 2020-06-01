@@ -1,5 +1,4 @@
-import Numeric from '../utils/numeric/Numeric.js'
-import Env from '../utils/environment/Env.js'
+import { Env, Numeric } from '../mod.js'
 
 export default class Game 
 {
