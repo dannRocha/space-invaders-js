@@ -1,5 +1,5 @@
 import { Actor } from '../../character/mod.js'
-
+import sortAliens from '../../utils/sort/sortAliens.js'
 /**
  * Creates and configures alien 'Actors'
  */
@@ -67,5 +67,5 @@ export default function generateAliens()
         aliens.push([...emeny])
     }
 
-    return aliens
+    return aliens.flat().sort( sortAliens )
 }

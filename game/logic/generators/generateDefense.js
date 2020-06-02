@@ -59,5 +59,5 @@ export default function generateDefense()
 
     defense.push(sectionOne, sectionTwo, sectionThree)
 
-    return defense
+    return defense.flatMap(blocks => blocks.flat())
 }
