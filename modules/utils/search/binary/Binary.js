@@ -7,6 +7,8 @@
  */
 export default function binarySearch(array, left, right, value)
 {
+    if(array.length === 1) return 0
+
     if(right > left)
     {
         const index = parseInt(left + (right - left) / 2)
