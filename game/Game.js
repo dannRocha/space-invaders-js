@@ -75,23 +75,14 @@ function draw()
     
     Render.BackgroundColor(contextCanvas, '#000')
     
-    for(let lineOfAliens of aliens)
+    for(let alien of aliens)
     {
-        for(let alien of lineOfAliens)
-        {
-            Render.RenderGameObject(contextCanvas, spritesheet, alien)
-        }
+        Render.RenderGameObject(contextCanvas, spritesheet, alien)
     }
 
-    for(let sectionDefense of defense)
+    for(let block of defense)
     {
-        for(let lineOfBlocks of sectionDefense)
-        {
-            for(let block of lineOfBlocks)
-            {
-                Render.RenderGameObject(contextCanvas, spritesheet, block) 
-            }
-        }
+        Render.RenderGameObject(contextCanvas, spritesheet, block) 
     }
     
     for(const bullet of ship.Bullets)
@@ -124,7 +115,7 @@ function update()
     const ADJUST_TO_CENTER  = 120
     const DELTA_T           = Math.sin(Env.Global.get('clock').value / MILLISECONDS)
         
-    aliens = moveAliens(aliens)
+    // aliens = moveAliens(aliens)
 
 
     if(ship.Speed) ship.X += ship.Speed * ship.Sense
@@ -149,53 +140,30 @@ function update()
             removeGameObjectsArrayById(ship.Bullets, bullet.Id)
         }
 
-        for(let sectionDefense of defense)
+        for(let block of defense)
         {
-            for(let lineOfBlocks of sectionDefense)
-            {
-                for(let block of lineOfBlocks)
+            if(Collision.CollisionBetweenGameObject(bullet, block))
+            {   
+                block.Resistance--
+                if(!block.Resistance)
                 {
-                    if(Collision.CollisionBetweenGameObject(bullet, block))
-                    {   
-                        block.Resistance--
-                        if(!block.Resistance)
-                        {
-                            removeGameObjectsArrayById(defense, block.Id)
-                        }
-                        
-                        removeGameObjectsArrayById(ship.Bullets, bullet.Id)
-                    }   
+                    removeGameObjectsArrayById(defense, block.Id)
                 }
-            }
+                
+                removeGameObjectsArrayById(ship.Bullets, bullet.Id)
+            }   
         }
     
 
-        for(let lineOfAliens of aliens)
+        for(let alien of aliens)
         {
-            let check = false
-
-            for(let alien of lineOfAliens)
+            if(Collision.CollisionBetweenGameObject(bullet, alien))
             {
-
-                if(Collision.CollisionBetweenGameObject(bullet, alien))
-                {  
-                    removeGameObjectsArrayById(ship.Bullets, bullet.Id)
-                    removeGameObjectsArrayById(aliens, alien.Id)
-                    
-                    if(!lineOfAliens.length)
-                    {
-                        aliens = aliens.filter(line => !!line.length)
-                       
-                    }
-
-                    check = true
-
-                    break
-                }
+                removeGameObjectsArrayById(ship.Bullets, bullet.Id)
+                removeGameObjectsArrayById(aliens, alien.Id)
+                break
             }
-
-            if(check) break
-        }
+        }    
     }
     
 
@@ -217,25 +185,19 @@ function update()
         }
 
         // Check collision with alien bullets and defense
-        for(let sectionDefense of defense)
+        for(let block of defense)
         {
-            for(let lineOfBlocks of sectionDefense)
+            if(Collision.CollisionBetweenGameObject(bullet, block))
             {
-                for(let block of lineOfBlocks)
-                {
-                    if(Collision.CollisionBetweenGameObject(bullet, block))
-                    {
-                        removeGameObjectsArrayById(alienBullets, bullet.Id)
-                        block.Resistance--
+                removeGameObjectsArrayById(alienBullets, bullet.Id)
+                block.Resistance--
 
-                        if(!block.Resistance)
-                        {
-                            removeGameObjectsArrayById(defense, block.Id)
-                        }
-                        
-                    }   
+                if(!block.Resistance)
+                {
+                    removeGameObjectsArrayById(defense, block.Id)
                 }
-            }
+                
+            }   
         }
     }
 
@@ -282,14 +244,11 @@ function joystick(keycode, event)
 
         if( !aliens.length ) return
 
-        let axisX = Math.floor(Math.random() * aliens.length)
-        let axisY = Math.floor(Math.random() * aliens[axisX].length)
-
-        
+        let index = parseInt(Math.random() * aliens.length)
         
         let bullet = new Bullet('Bullet-Aliens')
-            bullet.X = aliens[axisX][axisY].X
-            bullet.Y = aliens[axisX][axisY].Y
+            bullet.X = aliens[index].X
+            bullet.Y = aliens[index].Y
             bullet.Width  =  8
             bullet.Height =  8
             bullet.Speed  =  8
