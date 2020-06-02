@@ -15,7 +15,7 @@ let alienBullets = new Array()
 
 async function setting()
 {
-    Env.Global.set('spritesheet', await Figure.LoadImage('../assets/img/invade.png'))
+    Env.Global.set('spritesheet', await Figure.LoadImage('../assets/img/invaders.png'))
     Env.Global.set('score', 0)
 
         // SETTING HERO:SHIP
@@ -145,6 +145,7 @@ function update()
             if(Collision.CollisionBetweenGameObject(bullet, block))
             {   
                 block.Resistance--
+                block.CurrentSprite--
                 if(!block.Resistance)
                 {
                     removeGameObjectsArrayById(defense, block.Id)
@@ -191,6 +192,7 @@ function update()
             {
                 removeGameObjectsArrayById(alienBullets, bullet.Id)
                 block.Resistance--
+                block.CurrentSprite--
 
                 if(!block.Resistance)
                 {
