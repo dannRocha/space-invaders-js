@@ -30,6 +30,7 @@ export default class GameObject
         this.__width = 0
         this.__height = 0
         this.__currentSprite = 0
+        this.__transform = 0
         this.__spriteSheetCoordinates = []
         this.__speed = 0
         this.__id = Numeric.Random()
@@ -170,14 +171,25 @@ export default class GameObject
         this.__id = id
     }
     /**
-     * @param {{x, y}} coord Object {x: 0, y: 0} 
+     * 
+     * @param {Object} coord "{x, y}": Sprite sheet coordinates 
+     * @param {Number} sizeWidth Sprite size
+     * @param {Number} sizeHeight Sprite size, default: sizeWidth
      */
-    AddCoordSprite(coord)
+    AddCoordSprite(coord, sizeWidth, sizeHeight = sizeWidth)
     {
-        if(typeof(coord) !== 'object' || !isValidSpriteSheetCoordinates(coord?.x, coord?.y))
+        if( typeof(coord) !== 'object' || !isValidSpriteSheetCoordinates(coord?.x, coord?.y))
         {
             throw `Error: "${this.__name}.AddCoordSprite" defines a object value: {x, y}`
         }
+
+        if( !Numeric.isNumber(sizeWidth) || !Numeric.isNumber(sizeHeight) )
+        {
+            throw new TypeError(`"SET" -> "${this.__name}.AddCoordSprite (objec, number, number)" must be a object and number`)
+        }
+        
+        coord.sizeWidth  = sizeWidth
+        coord.sizeHeight = sizeHeight
 
         this.__spriteSheetCoordinates.push(coord)
     }

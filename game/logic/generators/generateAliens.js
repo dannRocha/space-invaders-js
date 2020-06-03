@@ -43,7 +43,8 @@ export default function generateAliens()
                     {
                         x: coordSprite.x * 2,
                         y: coordSprite.y
-                    }
+                    },
+                    8
                 )
                 // Sprite mapping: sprite 2
                 alien.AddCoordSprite
@@ -51,7 +52,8 @@ export default function generateAliens()
                     {
                         x: (row * 16 - 8),
                         y: coordSprite.y
-                    }
+                    },
+                    8
                 )
 
             emeny.push(alien)

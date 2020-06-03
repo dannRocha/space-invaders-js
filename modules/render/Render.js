@@ -59,8 +59,9 @@ export default class Render
             contextCanvas, spritesheet,
             gameobject.SpriteSheetCoordinates[gameobject.CurrentSprite].x,
             gameobject.SpriteSheetCoordinates[gameobject.CurrentSprite].y,
-            gameobject.Width, gameobject.Height, gameobject.X, gameobject.Y, 
-            (gameobject.Width * scale), (gameobject.Height * scale) 
+            gameobject.Width, gameobject.Height, gameobject.X, gameobject.Y,
+            gameobject.SpriteSheetCoordinates[gameobject.CurrentSprite].sizeWidth,
+            gameobject.SpriteSheetCoordinates[gameobject.CurrentSprite].sizeHeight 
         )
     }
 

@@ -43,9 +43,9 @@ export default function generateDefense()
                     block.X = (j * block.Width) + positionX
                     block.Y = (i * block.Height) + positionY
                     block.CurrentSprite = 2
-                    block.AddCoordSprite({x: 96, y: 8})
-                    block.AddCoordSprite({x: 88, y: 8})
-                    block.AddCoordSprite({x: 80, y: 8})
+                    block.AddCoordSprite({x: 96, y: 8}, 8)
+                    block.AddCoordSprite({x: 88, y: 8}, 8)
+                    block.AddCoordSprite({x: 80, y: 8}, 8)
     
                 row.push(block)
             }

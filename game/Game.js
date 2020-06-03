@@ -25,7 +25,7 @@ async function setting()
         ship.Speed = 5
         ship.Lives = 3
         ship.Score = -1_000
-        ship.AddCoordSprite({x: 0, y: 8})
+        ship.AddCoordSprite({x: 0, y: 8}, 8)
 
         // SETTING EMENY:BOSS
         boss.X = parseInt(Env.Global.get('screen').width)
@@ -36,7 +36,7 @@ async function setting()
         boss.Sense = -1
         boss.Lives = 2
         boss.Score = 1_000
-        boss.AddCoordSprite({x: 24, y: 8})
+        boss.AddCoordSprite({x: 24, y: 8}, 8)
 
         // SETTING EMENY:ALIENS
         aliens  = generateAliens() 
@@ -235,7 +235,7 @@ function joystick(keycode, event)
             bullet.Height = 8
             bullet.Speed =  8
             bullet.Sense =  -1
-            bullet.AddCoordSprite({x: 10, y: 8})
+            bullet.AddCoordSprite({x: 10, y: 8}, 4, 8)
 
         ship.AddBullets(bullet)
     }
@@ -250,11 +250,11 @@ function joystick(keycode, event)
         let bullet = new Bullet('Bullet-Aliens')
             bullet.X = aliens[index].X
             bullet.Y = aliens[index].Y
-            bullet.Width  =  8
+            bullet.Width  =  3
             bullet.Height =  8
             bullet.Speed  =  8
             bullet.Sense  = 1
-            bullet.AddCoordSprite({x: 8, y: 8})
+            bullet.AddCoordSprite({x: 16, y: 8}, 8)
 
             alienBullets.push(bullet)
 
