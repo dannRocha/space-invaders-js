@@ -1,4 +1,4 @@
-import { Env, Numeric } from '../mod.js'
+import { Env, GameObject, Numeric, Search} from '../mod.js'
 
 export default class Game 
 {
@@ -62,7 +62,35 @@ export default class Game
         requestAnimationFrame(__loop)        
     
     }
-    
+
+
+    /**
+     * 
+     * @param {Array<GameObject>} gameObject reference to the gameObject
+     * @param {number} id GameObject identification
+     * 
+     */
+    static removeGameObjectArrayById(gameObject, id)
+    {
+        for(var i = 0; i < gameObject.length; i++)
+        {
+            if(Array.isArray(gameObject[i]))
+            {
+                this.removeGameObjectArrayById(gameObject[i], id)
+                continue
+            }
+
+            if(id === gameObject[i].Id)
+            {          
+                gameObject.splice(i, 1)
+                break
+            }           
+        }
+    }
+
+    /**
+     * 
+     */
     static get DeltaTime()
     {
         return Env.Global.get('clock')
