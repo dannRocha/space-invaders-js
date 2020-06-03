@@ -90,6 +90,24 @@ export default class Game
 
     /**
      * 
+     * @param {Number} time seconds 
+     */
+    static delay(time)
+    {
+        const DATE = Date.now()
+        const MILLISECONDS = 1_000
+        
+        let curretDate = null
+
+        do{ 
+            curretDate = Date.now() 
+        }
+        while(curretDate - DATE < MILLISECONDS * time)
+
+    }
+
+    /**
+     * 
      */
     static get DeltaTime()
     {
