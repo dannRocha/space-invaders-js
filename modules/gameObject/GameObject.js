@@ -34,9 +34,10 @@ export default class GameObject
         this.__spriteSheetCoordinates = []
         this.__speed = 0
         this.__id = Numeric.Random()
-        if(!name){
+        
+        if(!name)
+        {
             throw ERROR.ID
-            
         }
 
         this.__name = name
@@ -98,6 +99,11 @@ export default class GameObject
     get Id()
     {
         return this.__id
+    }
+
+    get Transform()
+    {
+        return this.__transform
     }
 
     set X(x)
@@ -169,6 +175,16 @@ export default class GameObject
         }
 
         this.__id = id
+    }
+    
+    set Transform(transform)
+    {
+        if(!Numeric.isNumber(transform))
+        {
+            throw new TypeError(`"SET" -> "${this.__name}.Transform" must be a number`)
+        }
+
+        this.__transform = transform
     }
     /**
      * 
