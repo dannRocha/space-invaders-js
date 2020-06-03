@@ -1,7 +1,6 @@
 import { Actor, Bullet } from './character/mod.js'
 import { generateAliens, generateDefense } from './logic/generators/mod.js'
 import { moveAliens } from './logic/moviment/mod.js'
-import { removeGameObjectsArrayById } from './logic/mechanics/mod.js'
 
 import { Collision, Control, Env, Figure, Game, Render } from '../modules/mod.js'
 
@@ -137,7 +136,7 @@ function update()
                 boss.X = Env.Global.get('screen').width
             }
 
-            removeGameObjectsArrayById(ship.Bullets, bullet.Id)
+            Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
         }
 
         for(let block of defense)
@@ -148,10 +147,10 @@ function update()
                 block.CurrentSprite--
                 if(!block.Resistance)
                 {
-                    removeGameObjectsArrayById(defense, block.Id)
+                    Game.removeGameObjectArrayById(defense, block.Id)
                 }
                 
-                removeGameObjectsArrayById(ship.Bullets, bullet.Id)
+                Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
             }   
         }
     
@@ -160,8 +159,8 @@ function update()
         {
             if(Collision.CollisionBetweenGameObject(bullet, alien))
             {
-                removeGameObjectsArrayById(ship.Bullets, bullet.Id)
-                removeGameObjectsArrayById(aliens, alien.Id)
+                Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
+                Game.removeGameObjectArrayById(aliens, alien.Id)
                 break
             }
         }    
@@ -176,13 +175,13 @@ function update()
         // Remove bullet when leaving the canvas boundaries
         if(bullet.Y >= Env.Global.get('screen').height)
         {
-            removeGameObjectsArrayById(alienBullets, bullet.Id)
+            Game.removeGameObjectArrayById(alienBullets, bullet.Id)
         }
 
         // Check collision with alien bullets and spaceship
         if(Collision.CollisionBetweenGameObject(bullet, ship))
         {
-            removeGameObjectsArrayById(alienBullets, bullet.Id)
+            Game.removeGameObjectArrayById(alienBullets, bullet.Id)
         }
 
         // Check collision with alien bullets and defense
@@ -190,13 +189,13 @@ function update()
         {
             if(Collision.CollisionBetweenGameObject(bullet, block))
             {
-                removeGameObjectsArrayById(alienBullets, bullet.Id)
+                Game.removeGameObjectArrayById(alienBullets, bullet.Id)
                 block.Resistance--
                 block.CurrentSprite--
 
                 if(!block.Resistance)
                 {
-                    removeGameObjectsArrayById(defense, block.Id)
+                    Game.removeGameObjectArrayById(defense, block.Id)
                 }
                 
             }   
