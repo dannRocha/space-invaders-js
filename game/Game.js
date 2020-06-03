@@ -229,13 +229,13 @@ function joystick(keycode, event)
 
 
         let bullet = new Bullet('Bullet-Spaceship')
-            bullet.X = ship.X
+            bullet.X = ship.X + 2
             bullet.Y = ship.Y
-            bullet.Width  = 8
+            bullet.Width  = 4
             bullet.Height = 8
             bullet.Speed =  8
             bullet.Sense =  -1
-            bullet.AddCoordSprite({x: 8, y: 8})
+            bullet.AddCoordSprite({x: 10, y: 8})
 
         ship.AddBullets(bullet)
     }
