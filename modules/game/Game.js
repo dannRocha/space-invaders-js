@@ -72,22 +72,7 @@ export default class Game
      */
     static removeGameObjectArrayById(gameObject, id)
     {
-        for(var i = 0; i < gameObject.length; i++)
-        {
-            if(Array.isArray(gameObject[i]))
-            {
-                this.removeGameObjectArrayById(gameObject[i], id)
-                continue
-            }
-
-            if(id === gameObject[i].Id)
-            {
-                // let index = Search.binary(gameObject.map(go => go.Id), id)
-                // console.log(`INDEXs "${i}" === "${index}" `)
-                gameObject.splice(i, 1)
-                break
-            }           
-        }
+        gameObject.splice(Search.binary(gameObject.map(go => go.Id), id), 1)
     }
 
     /**
