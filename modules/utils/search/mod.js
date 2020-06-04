@@ -1,4 +1,4 @@
-import binary from './binary/Binary.js'
+import binarySearch  from './binary/Binary.js'
 
 export default class Search
 {
@@ -14,6 +14,6 @@ export default class Search
      */
     static binary(array, value)
     {
-        return binary(array, 0, array.length - 1, value)
+        return binarySearch(array, value)
     }
 }

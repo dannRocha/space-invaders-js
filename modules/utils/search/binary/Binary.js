@@ -1,30 +1,30 @@
 /**
  * 
- * @param {Array} array 
- * @param {Number} left 
- * @param {Number} right 
- * @param {Number} value 
+ * @param {*} array 
+ * @param {*} value 
+ * @param {*} begin 
+ * @param {*} end 
  */
-export default function binarySearch(array, left, right, value)
+export default function binarySearch(array, value, begin = 0, end = array.length - 1)
 {
-    if(array.length === 1) return 0
-
-    if(right > left)
+    
+    if(begin <= end)
     {
-        const index = parseInt(left + (right - left) / 2)
+        let m = parseInt((begin + end) / 2)
         
-        if(array[index] === value)
+        if(array[m] == value)
         {
-            return index
+            return m
         }
+        
+        if(value < array[m])
+            return binarySearch(array, value, begin, m - 1)
+        else
+            return binarySearch(array, value, m + 1, end)
 
-        if(array[index] > value)
-        {
-            return binarySearch(array, left, index - 1, value)
-        }
 
-        return binarySearch(array, index + 1, right, value)
     }
 
-    return -1
+    return null
 }
+
