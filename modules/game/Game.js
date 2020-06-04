@@ -81,13 +81,32 @@ export default class Game
             }
 
             if(id === gameObject[i].Id)
-            {          
+            {
+                // let index = Search.binary(gameObject.map(go => go.Id), id)
+                // console.log(`INDEXs "${i}" === "${index}" `)
                 gameObject.splice(i, 1)
                 break
             }           
         }
     }
 
+    /**
+     * 
+     * @param {Array<GameObject>} gameObjects 
+     * @param {Number} id 
+     * @param {Boolean} status 
+     */
+    static enableOrDisableGameObjectArrayByID(gameObjects, id, status)
+    {
+        if( typeof status !== 'boolean' 
+            || !Array.isArray(gameObjects)
+            || !Numeric.isNumber(id) 
+        )
+        {
+            throw new TypeError(`"Game.enableOrDisableGameObjectArrayByID(objec, number, number)" must be a object and number`)
+        }
+
+    }
     /**
      * 
      * @param {Number} time seconds 

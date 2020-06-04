@@ -34,6 +34,7 @@ export default class GameObject
         this.__spriteSheetCoordinates = []
         this.__speed = 0
         this.__id = Numeric.Random()
+        this.__enable = true
         
         if(!name)
         {
@@ -104,6 +105,11 @@ export default class GameObject
     get Transform()
     {
         return this.__transform
+    }
+
+    get Enable()
+    {
+        return this.__enable
     }
 
     set X(x)
@@ -186,6 +192,16 @@ export default class GameObject
 
         this.__transform = transform
     }
+
+    set Enable(status)
+    {
+        if(typeof status !== 'boolean')
+        {
+            throw new TypeError(`"SET" -> "${this.__name}.Enable" must be a boolean`)
+        }
+
+        this.__enable = status
+    }
     /**
      * 
      * @param {Object} coord "{x, y}": Sprite sheet coordinates 
@@ -206,6 +222,8 @@ export default class GameObject
         
         coord.sizeWidth  = sizeWidth
         coord.sizeHeight = sizeHeight
+
+        window.coord = coord
 
         this.__spriteSheetCoordinates.push(coord)
     }
