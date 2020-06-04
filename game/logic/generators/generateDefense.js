@@ -1,5 +1,7 @@
 import { Wall } from '../../character/mod.js'
 import { Numeric } from '../../../modules/mod.js'
+import sortDefense from '../../utils/sort/sortAliens.js'
+
 
 /**
  * Creates and configures defense blocks
@@ -62,5 +64,5 @@ export default function generateDefense()
 
     defense.push(sectionOne, sectionTwo, sectionThree)
 
-    return defense.flatMap(blocks => blocks.flat())
+    return defense.flatMap(blocks => blocks.flat()).sort(sortDefense)
 }
