@@ -8,7 +8,7 @@ export default class Search
     }
     /**
      * 
-     * @param {Array} array 
+     * @param {Array<Number>} array 
      * @param {Number} value
      *  
      */
