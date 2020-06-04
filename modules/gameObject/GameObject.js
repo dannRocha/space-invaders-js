@@ -33,7 +33,7 @@ export default class GameObject
         this.__transform = 0
         this.__spriteSheetCoordinates = []
         this.__speed = 0
-        this.__id = Numeric.Random()
+        this.__id = parseInt(Numeric.Random())
         this.__enable = true
         
         if(!name)
