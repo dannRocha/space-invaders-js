@@ -1,5 +1,5 @@
 import { Wall } from '../../character/mod.js'
-import { Numeric } from '../../../modules/mod.js'
+import { Numeric, Vector2D } from '../../../modules/mod.js'
 import sortDefense from '../../utils/sort/sortAliens.js'
 
 
@@ -42,8 +42,10 @@ export default function generateDefense()
                     block.Width      = 8
                     block.Height     = 8
                     block.Resistance = 3
-                    block.X = (j * block.Width) + positionX
-                    block.Y = (i * block.Height) + positionY
+                    block.Position = new Vector2D(
+                        (j * block.Width) + positionX,
+                        (i * block.Height) + positionY
+                    )
                     block.CurrentSprite = 2
                     block.AddCoordSprite({x: 96, y: 8}, 8)
                     block.AddCoordSprite({x: 88, y: 8}, 8)

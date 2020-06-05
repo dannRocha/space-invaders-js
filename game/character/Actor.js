@@ -1,4 +1,4 @@
-import { GameObject, Numeric } from '../../modules/mod.js'
+import { GameObject, Numeric, Vector2D } from '../../modules/mod.js'
 
 export default class Actor extends GameObject
 {
@@ -12,7 +12,7 @@ export default class Actor extends GameObject
         this.__bullets = []
         this.__lives = 0
         this.__score = 0
-        this.__sense = 0
+        this.__sense = new Vector2D()
     }
 
     get Bullets()
@@ -57,12 +57,12 @@ export default class Actor extends GameObject
 
     set Sense(sense)
     {
-        if(!Numeric.isNumber(sense))
+        if(sense?.TypeOf !== 'Vector2D')
         {
-            throw new TypeError(`Error: "SET" -> "${this.__name}.Sense" must be a number`)
+            throw new TypeError(`"SET" -> "${this.__name}.Sense" must be a Vector2D`)
         }
 
-        this.__sense = sense
+        this.__sense = Vector2D.copy(sense)
     }
 
 

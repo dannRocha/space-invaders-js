@@ -4,6 +4,7 @@ export default class Vector2D
     {
         this.__x = x
         this.__y = y
+        this.__typeof = 'Vector2D'
     }
     
     toString()
@@ -19,6 +20,11 @@ export default class Vector2D
     get Y()
     {
         return this.__y
+    }
+
+    get TypeOf()
+    {
+        return this.__typeof
     }
 
     set X(x)
@@ -84,19 +90,24 @@ export default class Vector2D
     /**
      * 
      * @param {Vector2D} vector 
-     * @param {Number} factorX 
+     * @param {Number | Vector2D} factorX 
      * @param {Number} factorY 
      */
-    static scale(vector, factorX, factorY = factorX)
+    static scale(vector, factor, factorY = factor)
     {
  
-        // let vec = new Vector2D()
-            let vec = Vector2D.copy(vector)
-            // vec = Vector2D.sum(vec, vector)
+        let vec = Vector2D.copy(vector)
 
-            vec.X *= factorX
-            vec.Y *= factorY
-
+        if(factor?.TypeOf === 'Vector2D')
+        {
+            vec.X *= factor.X
+            vec.Y *= factor.Y
+            return vec
+        }
+        
+        vec.X *= factor
+        vec.Y *= factorY
+        
         return vec
     }
 

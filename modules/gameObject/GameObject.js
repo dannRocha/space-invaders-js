@@ -1,4 +1,4 @@
-import { Numeric } from '../mod.js'
+import { Numeric, Vector2D } from '../mod.js'
 
 function isValidSpriteSheetCoordinates(...coords)
 {
@@ -25,14 +25,15 @@ export default class GameObject
 {
     constructor(name)
     {
-        this.__x = 0
-        this.__y = 0
+        // this.__x = 0
+        // this.__y = 0
+        this.__position = new Vector2D()
         this.__width = 0
         this.__height = 0
         this.__currentSprite = 0
         this.__transform = 0
         this.__spriteSheetCoordinates = []
-        this.__speed = 0
+        this.__speed = new Vector2D()
         this.__id = parseInt(Numeric.Random())
         this.__enable = true
         
@@ -49,12 +50,17 @@ export default class GameObject
 
     get X()
     {
-        return this.__x
+        return this.__position.X
     }
 
     get Y()
     {
-        return this.__y
+        return this.__position.Y
+    }
+
+    get Position()
+    {
+        return this.__position
     }
 
     get Width()
@@ -114,22 +120,22 @@ export default class GameObject
 
     set X(x)
     {
-        if(!Numeric.isNumber(x))
-        {
-            throw `Error: "${this.__name}.X" defines a numeric value`
-        }
-        
-        this.__x = x
+        throw new Error(`${this.__name}.X cannot be defined. Change ${this.__name}.Position`)
     }
 
     set Y(y)
     {
-        if(!Numeric.isNumber(y)) 
+        throw new Error(`${this.__name}.Y cannot be defined. Change ${this.__name}.Position`)
+    }
+
+    set Position(vector)
+    {
+        if(vector?.TypeOf !== 'Vector2D')
         {
-            throw `Error: "${this.__name}.Y" defines a numeric value`
+            throw new TypeError(`"SET" -> "${this.__name}.Position" must be a Vector2D`)
         }
-        
-        this.__y = y
+
+        this.__position = Vector2D.copy(vector)
     }
 
     set Width(width)
@@ -165,12 +171,13 @@ export default class GameObject
 
     set Speed(speed)
     {
-        if(!Numeric.isNumber(speed)) 
+
+        if(speed?.TypeOf !== 'Vector2D')
         {
-            throw `Error: "${this.__name}.Speed" defines a numeric value`
+            throw new TypeError(`"SET" -> "${this.__name}.Speed" must be a Vector2D`)
         }
 
-        this.__speed = speed
+        this.__speed = Vector2D.copy(speed)
     }
 
     set Id(id)
@@ -222,8 +229,6 @@ export default class GameObject
         
         coord.sizeWidth  = sizeWidth
         coord.sizeHeight = sizeHeight
-
-        window.coord = coord
 
         this.__spriteSheetCoordinates.push(coord)
     }

@@ -2,7 +2,7 @@ import { Actor, Bullet } from './character/mod.js'
 import { generateAliens, generateDefense } from './logic/generators/mod.js'
 import { moveAliens } from './logic/moviment/mod.js'
 
-import { Collision, Control, Env, Figure, Game, Render } from '../modules/mod.js'
+import { Collision, Control, Env, Figure, Game, Render, Vector2D } from '../modules/mod.js'
 
 
 let ship    = new Actor('Ship')
@@ -18,22 +18,26 @@ async function setting()
     Env.Global.set('score', 0)
 
         // SETTING HERO:SHIP
-        ship.X = parseInt(Env.Global.get('screen').width / 2)
-        ship.Y = parseInt(Env.Global.get('screen').height - 32)
+        ship.Position = new Vector2D(
+            Env.Global.get('screen').width  / 2, 
+            Env.Global.get('screen').height - 32
+        )
         ship.Width = 8
         ship.Height= 8
-        ship.Speed = 5
+        ship.Speed = new Vector2D(5, 0)
         ship.Lives = 3
         ship.Score = -1_000
         ship.AddCoordSprite({x: 0, y: 8}, 8)
 
         // SETTING EMENY:BOSS
-        boss.X = parseInt(Env.Global.get('screen').width)
-        boss.Y = 10
+        boss.Position = new Vector2D(
+            Env.Global.get('screen').width, 
+            10
+        )
         boss.Width = 8
         boss.Height= 8
-        boss.Speed = 0.8
-        boss.Sense = -1
+        boss.Speed = new Vector2D( 8, 0)
+        boss.Sense = new Vector2D(-1, 0)
         boss.Lives = 2
         boss.Score = 1_000
         boss.AddCoordSprite({x: 24, y: 8}, 8)
@@ -116,15 +120,34 @@ function update()
         
     // aliens = moveAliens(aliens)
 
+    if(ship.Sense.X || ship.Sense.Y)
+    {
+        ship.Position = Vector2D.sum(
+            ship.Position,
+            Vector2D.scale(ship.Speed, ship.Sense)
+        )
+    }
+    
+    if(boss.Sense.X || boss.Sense.Y)
+    {
+        boss.Position = Vector2D.sum(
+            boss.Position, 
+            Vector2D.scale(boss.Speed, boss.Sense)
+        )
+        if(boss.X < 0 || boss.X > Env.Global.get('screen').width - boss.Width)
+            boss.Sense = Vector2D.scale(boss.Sense, new Vector2D(-1, 0))
 
-    if(ship.Speed) ship.X += ship.Speed * ship.Sense
-    if(boss.Speed) boss.X = (DELTA_T * ROUTE_SIZE + ADJUST_TO_CENTER) * boss.Speed
+    }
 
 
     for(const bullet of [ ...ship.Bullets ])
     {
-        bullet.Y += bullet.Sense * bullet.Speed
-
+        
+        bullet.Position = Vector2D.sum( 
+            bullet.Position, 
+            Vector2D.scale(bullet.Speed, bullet.Sense )
+        )
+        
         if(bullet.Y + bullet.Height < 0) ship.RemoveBullets()
         
         if(Collision.CollisionBetweenGameObject(boss, bullet))
@@ -132,8 +155,8 @@ function update()
             boss.Lives--
             if(!boss.Lives)
             {
-                boss.Speed = 0
-                boss.X = Env.Global.get('screen').width
+                boss.Speed = new Vector2D(0, 0)
+                boss.Position = new Vector2D(Env.Global.get('screen').width)
             }
 
             Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
@@ -169,8 +192,11 @@ function update()
 
     for(const bullet of alienBullets)
     {
-        bullet.Y += bullet.Sense * bullet.Speed
-
+        // bullet.Y += bullet.Sense * bullet.Speed
+        bullet.Position = Vector2D.sum(
+            bullet.Position, 
+            Vector2D.scale(bullet.Speed, bullet.Sense)
+        )
 
         // Remove bullet when leaving the canvas boundaries
         if(bullet.Y >= Env.Global.get('screen').height)
@@ -207,14 +233,21 @@ function update()
 function joystick(keycode, event)
 {
     const SPACE_BETWEEN_BULLETS = 50
-
+    window.ship = ship
     //KEYDOWN
-    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.A) ship.Sense = -1
-    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.D) ship.Sense =  1
-    
+    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.A)
+        ship.Sense = new Vector2D(-1, 0)
+
+    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.D) //ship.Sense =  1
+        ship.Sense = new Vector2D( 1, 0)
+
     //KEYUP
-    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.A) ship.Sense = 0
-    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.D) ship.Sense = 0
+    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.A) 
+        ship.Sense = Vector2D.scale(ship.Sense, 0)
+       
+    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.D) 
+        ship.Sense = Vector2D.scale(ship.Sense, 0)
+        
     
     // BULLETS KEY
     if (  event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.SPACEBAR
@@ -229,12 +262,11 @@ function joystick(keycode, event)
 
 
         let bullet = new Bullet('Bullet-Spaceship')
-            bullet.X = ship.X + 2
-            bullet.Y = ship.Y
+            bullet.Position = new Vector2D(ship.X + 2, ship.Y)
             bullet.Width  = 4
             bullet.Height = 8
-            bullet.Speed =  8
-            bullet.Sense =  -1
+            bullet.Speed = new Vector2D(0, 8)
+            bullet.Sense = new Vector2D(0, -1)
             bullet.AddCoordSprite({x: 10, y: 8}, 4, 8)
 
         ship.AddBullets(bullet)
@@ -248,12 +280,14 @@ function joystick(keycode, event)
         let index = parseInt(Math.random() * aliens.length)
         
         let bullet = new Bullet('Bullet-Aliens')
-            bullet.X = aliens[index].X
-            bullet.Y = aliens[index].Y
+            bullet.Position = new Vector2D(
+                aliens[index].X, 
+                aliens[index].Y
+            )
             bullet.Width  =  3
             bullet.Height =  8
-            bullet.Speed  =  8
-            bullet.Sense  = 1
+            bullet.Speed  =  new Vector2D(0, 8)
+            bullet.Sense  =  new Vector2D(0, 1)
             bullet.AddCoordSprite({x: 16, y: 8}, 8)
 
             alienBullets.push(bullet)

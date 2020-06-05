@@ -1,5 +1,6 @@
 import { Actor } from '../../character/mod.js'
 import sortAliens from '../../utils/sort/sortAliens.js'
+import { Vector2D } from '../../../modules/mod.js'
 /**
  * Creates and configures alien 'Actors'
  */
@@ -29,13 +30,15 @@ export default function generateAliens()
             const alien = new Actor('Alien')
 
                 // SETTING EMENY:ALIEN
-                alien.X = coord.x * margin
-                alien.Y = coord.y * margin + spaceBetween
+                alien.Position = new Vector2D(
+                    coord.x * margin, 
+                    coord.y * margin + spaceBetween
+                )
                 alien.Width  = 8
                 alien.Height = 8
                 alien.Score = score
-                alien.Speed = 1
-                alien.Sense = 1
+                alien.Speed = new Vector2D(1, 0)
+                alien.Sense = new Vector2D(1, 0)
 
                 // Sprite mapping: sprite 1
                 alien.AddCoordSprite
