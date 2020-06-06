@@ -1,4 +1,7 @@
 import { Env, GameObject, Numeric, Search} from '../mod.js'
+import { CacheGameObject } from './utils/mod.js'
+
+const cache = new CacheGameObject()
 
 export default class Game 
 {
@@ -72,7 +75,20 @@ export default class Game
      */
     static removeGameObjectArrayById(gameObject, id)
     {
-        gameObject.splice(Search.binary(gameObject.map(go => go.Id), id), 1)
+        if(!gameObject.length) return
+        
+        let key = gameObject[0].Name 
+        
+        if(!cache.search(key) || !cache.search(key).length)
+        {
+            cache.createCache(gameObject)
+        }
+
+
+        let index = Search.binary(cache.search(key), id)
+    
+        gameObject.splice(index, 1)
+        cache.store[key].splice(index, 1)
     }
 
     /**
@@ -91,7 +107,22 @@ export default class Game
             throw new TypeError(`"Game.enableOrDisableGameObjectArrayByID(objec, number, number)" must be a object and number`)
         }
 
+        if(!gameObject.length) return
+        
+        let key = gameObject[0].Name 
+        
+        if(!cache.search(key) || !cache.search(key).length)
+        {
+            cache.createCache(gameObject)
+        }
+
+
+        let index = Search.binary(cache.search(key), id)
+    
+        gameObjects[index].Enable = status
+        
     }
+
     /**
      * 
      * @param {Number} time seconds 
