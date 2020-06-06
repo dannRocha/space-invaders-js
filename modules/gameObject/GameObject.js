@@ -118,6 +118,11 @@ export default class GameObject
         return this.__enable
     }
 
+    get Name()
+    {
+        return this.__name
+    }
+
     set X(x)
     {
         throw new Error(`${this.__name}.X cannot be defined. Change ${this.__name}.Position`)
