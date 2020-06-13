@@ -48,10 +48,6 @@ async function setting()
         // SETTING DEFENSE
         defense = generateDefense()
         
-        
-        // SETTING JOYSTICK
-        Control.AddEvent(Control.EVENTS.KEYDOWN, joystick)
-        Control.AddEvent(Control.EVENTS.KEYUP, joystick)
 }
 
 async function startUp()
@@ -67,6 +63,7 @@ async function startUp()
 
 function main()
 {
+    joystick()
     draw()
     update()
 }
@@ -113,11 +110,7 @@ function draw()
 
 function update()
 {
-    const MILLISECONDS      = 2_000
-    const ROUTE_SIZE        = 300
-    const ADJUST_TO_CENTER  = 120
-    const DELTA_T           = Math.sin(Env.Global.get('clock').value / MILLISECONDS)
-        
+    
     // aliens = moveAliens(aliens)
 
     if(ship.Sense.X || ship.Sense.Y)
@@ -230,36 +223,22 @@ function update()
 
 }
 
-function joystick(keycode, event)
+function joystick()
 {
     const SPACE_BETWEEN_BULLETS = 50
-    window.ship = ship
-    //KEYDOWN
-    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.A)
+   
+    if(Control.isDown('a', 'arrowleft')) 
         ship.Sense = new Vector2D(-1, 0)
-
-    if(event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.D) //ship.Sense =  1
+    else if(Control.isDown('d', 'arrowright')) 
         ship.Sense = new Vector2D( 1, 0)
-
-    //KEYUP
-    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.A) 
-        ship.Sense = Vector2D.scale(ship.Sense, 0)
-       
-    if(event.type === Control.EVENTS.KEYUP && keycode === Control.Button.D) 
+    else 
         ship.Sense = Vector2D.scale(ship.Sense, 0)
         
-    
-    // BULLETS KEY
-    if (  event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.SPACEBAR
-        ||event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.W
-    )
-    {   
-        // ADD SPACE BETWEEN BULLETS
-        if(ship.Bullets[ship.Bullets.length - 1]?.Y  + SPACE_BETWEEN_BULLETS > ship.Y)
-        {
-            return
-        }
 
+    if(Control.isDown('w', 'spacebar', 'arrowup'))
+    {   
+        if(ship.Bullets[ship.Bullets.length - 1]?.Y  + SPACE_BETWEEN_BULLETS > ship.Y)
+            return
 
         let bullet = new Bullet('Bullet-Spaceship')
             bullet.Position = new Vector2D(ship.X + 2, ship.Y)
@@ -272,7 +251,8 @@ function joystick(keycode, event)
         ship.AddBullets(bullet)
     }
 
-    if( event.type === Control.EVENTS.KEYDOWN && keycode === Control.Button.X )
+    
+    if(Control.isDown('x'))
     {
 
         if( !aliens.length ) return
@@ -291,8 +271,9 @@ function joystick(keycode, event)
             bullet.AddCoordSprite({x: 16, y: 8}, 8)
 
             alienBullets.push(bullet)
-
+            
     }
+
 }
 
 export default startUp

@@ -1,4 +1,4 @@
-import { Env, Numeric } from '../mod.js'
+import { Env, Numeric, Control } from '../mod.js'
 
 export default class Screen 
 {
@@ -34,6 +34,9 @@ export default class Screen
         document.body.appendChild(this.__canvas)
 
         this.__identification = Symbol('canvas')
+
+        Control.AddEvent(Control.EVENTS.KEYDOWN, function(){}, globalThis)
+        Control.AddEvent(Control.EVENTS.KEYUP, function(){}, globalThis)
 
         Env.Global.set('canvas', this.Canvas)
 
