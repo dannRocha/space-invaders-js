@@ -27,7 +27,7 @@ export default class Actor extends GameObject
 
     get Score()
     {
-        return this.__pointer
+        return this.__score
     }
 
     get Sense()

@@ -10,12 +10,14 @@ let boss    = new Actor('Boss')
 let aliens  = new Array()
 let defense = new Array()
 let alienBullets = new Array()
+let score   = null
     
 
 async function setting()
 {
     Env.Global.set('spritesheet', await Figure.LoadImage('../assets/img/invaders.png'))
-    Env.Global.set('score', 0)
+  
+    score = 0
 
         // SETTING HERO:SHIP
         ship.Position = new Vector2D(
@@ -104,14 +106,14 @@ function draw()
         contextCanvas,                         // CONTEXT CANVAS
         { color: '#FFF', family: '7px serif'}, // FONT
         0, Env.Global.get('screen').width - 8, // POSITION
-        `SCORE : ${Env.Global.get('score')}`   // MESSAGE
+        `SCORE : ${score}`                     // MESSAGE
     )
 }
 
 function update()
 {
     
-    // aliens = moveAliens(aliens)
+    moveAliens(aliens)
 
     if(ship.Sense.X || ship.Sense.Y)
     {
@@ -146,6 +148,8 @@ function update()
         if(Collision.CollisionBetweenGameObject(boss, bullet))
         {
             boss.Lives--
+            score += boss.Score
+            
             if(!boss.Lives)
             {
                 boss.Speed = new Vector2D(0, 0)
@@ -161,6 +165,7 @@ function update()
             {   
                 block.Resistance--
                 block.CurrentSprite--
+
                 if(!block.Resistance)
                 {
                     Game.removeGameObjectArrayById(defense, block.Id)
@@ -175,8 +180,11 @@ function update()
         {
             if(Collision.CollisionBetweenGameObject(bullet, alien))
             {
+                score += alien.Score
+                
                 Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
                 Game.removeGameObjectArrayById(aliens, alien.Id)
+                
                 break
             }
         }    
@@ -185,7 +193,7 @@ function update()
 
     for(const bullet of alienBullets)
     {
-        // bullet.Y += bullet.Sense * bullet.Speed
+
         bullet.Position = Vector2D.sum(
             bullet.Position, 
             Vector2D.scale(bullet.Speed, bullet.Sense)
@@ -201,6 +209,7 @@ function update()
         if(Collision.CollisionBetweenGameObject(bullet, ship))
         {
             Game.removeGameObjectArrayById(alienBullets, bullet.Id)
+    
         }
 
         // Check collision with alien bullets and defense
