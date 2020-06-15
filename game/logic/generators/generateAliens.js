@@ -8,7 +8,7 @@ export default function generateAliens()
 {
     let aliens= []
     let score = 10
-    const COLL = 18
+    const COLL = 12
     const ROWS = 6
 
     const coord = {x: 0, y: 0}
@@ -19,7 +19,7 @@ export default function generateAliens()
     while(++row <= ROWS)
     {
         const emeny = []
-        const margin= 1.5
+        const margin= 2
         const spaceBetween = 30
 
         coord.x = 0
