@@ -35,8 +35,9 @@ export default class Screen
 
         this.__identification = Symbol('canvas')
 
-        Control.AddEvent(Control.EVENTS.KEYDOWN, function(){}, globalThis)
-        Control.AddEvent(Control.EVENTS.KEYUP, function(){}, globalThis)
+        Control.AddEvent(Control.EVENTS.KEYDOWN, ()=>{}, globalThis)
+        Control.AddEvent(Control.EVENTS.KEYUP,   ()=>{}, globalThis)
+        Control.AddEvent(Control.EVENTS.KEYPRESS,()=>{}, globalThis)
 
         Env.Global.set('canvas', this.Canvas)
 
