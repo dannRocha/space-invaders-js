@@ -4,7 +4,6 @@ import { moveAliens } from './logic/moviment/mod.js'
 
 import { Collision, Control, Env, Figure, Game, Render, Vector2D, Sound } from '../modules/mod.js'
 
-
 let ship    = new Actor('Ship')
 let boss    = new Actor('Boss')
 let aliens  = new Array()
@@ -12,35 +11,31 @@ let defense = new Array()
 let alienBullets = new Array()
 let score   = null
 
-let sound = {
-    laser: null,
-    explosion: {
-        alien: null,
-        boss : null,
-    },
-    end : {
-        win  : null, 
-        death: null,
+
+var background = new Howl({
+    src: ['/assets/sound/background_sound0.ogg'],
+    autoplay: true,
+    loop: true,
+})
+
+var sound = new Howl({
+    src: [
+        '/assets/sound/laser_spaceship.wav',
+        '/assets/sound/atari_boom3.wav',
+    ],
+    sprite: {
+        'laser': [0, 100, ],
+        'explosion-alien': [100, 800],
     }
-}
+})
+
 
 async function setting()
 {
     Env.Global.set('spritesheet', await Figure.LoadImage('../assets/img/invaders.png'))
-    // Env.Global.set('sound_space', [aw])
-    sound.laser           = Sound.LoadSound('/assets/sound/laser_spaceship.wav')
-    sound.explosion.alien = Sound.LoadSound('/assets/sound/atari_boom3.wav')
-    sound.explosion.boss  = Sound.LoadSound('/assets/sound/atari_boom5.wav')
-    sound.end.win         = Sound.LoadSound('/assets/sound/round_end.wav')
-    sound.end.death       = Sound.LoadSound('/assets/sound/death.wav')
+
     score = 0
-
-
-        sound.laser           = await sound.laser
-        sound.explosion.alien = await sound.explosion.alien
-        sound.explosion.boss  = await sound.explosion.boss
-        sound.end.win         = await sound.end.win
-        sound.end.death       = await sound.death
+    background.play()
 
         // SETTING HERO:SHIP
         ship.Position = new Vector2D(
@@ -172,13 +167,13 @@ function update()
         {
             boss.Lives--
             score += boss.Score
-            sound.explosion.boss.play()
+            // sound.get('explosion-boss').play()
 
             if(!boss.Lives)
             {
                 boss.Speed = new Vector2D(0, 0)
                 boss.Position = new Vector2D(Env.Global.get('screen').width)
-                sound.end.win.play()
+                // sound.get('end-win').play()
             }
 
             Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
@@ -206,7 +201,8 @@ function update()
             if(Collision.CollisionBetweenGameObject(bullet, alien))
             {
                 score += alien.Score
-                sound.explosion.alien.play()
+                // sound.get('explosion-alien').play()
+                sound.play('explosion-alien')
 
                 Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
                 Game.removeGameObjectArrayById(aliens, alien.Id)
@@ -272,7 +268,6 @@ function joystick()
     {   
         const SPACE_BETWEEN_BULLETS = 50
         
-        sound.laser.play()
 
         if(ship.Bullets[ship.Bullets.length - 1]?.Y  + SPACE_BETWEEN_BULLETS > ship.Y)
             return
@@ -288,6 +283,8 @@ function joystick()
             bullet.AddCoordSprite({x: 10, y: 8}, 4, 8)
 
         ship.AddBullets(bullet)
+        sound.play('laser')
+
     }
 
     
