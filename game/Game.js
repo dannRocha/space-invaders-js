@@ -10,32 +10,32 @@ let aliens  = new Array()
 let defense = new Array()
 let alienBullets = new Array()
 let score   = null
-
-
-var background = new Howl({
-    src: ['/assets/sound/background_sound0.ogg'],
-    autoplay: true,
-    loop: true,
-})
-
-var sound = new Howl({
-    src: [
-        '/assets/sound/laser_spaceship.wav',
-        '/assets/sound/atari_boom3.wav',
-    ],
-    sprite: {
-        'laser': [0, 100, ],
-        'explosion-alien': [100, 800],
-    }
-})
+let sound   = new Object();
 
 
 async function setting()
 {
     Env.Global.set('spritesheet', await Figure.LoadImage('../assets/img/invaders.png'))
 
+    sound.laser = new Howl({
+        src: [ '/assets/sound/laser_spaceship.wav', ],
+        sprite: { 'laser': [0, 100, ], }
+    })
+
+    sound.explosion = new Howl({
+        src: ['/assets/sound/atari_boom3.wav', ],
+        sprite: { 'explosion-alien': [100, 800], }
+    })
+
+    sound.background = new Howl({
+        src: ['/assets/sound/background_sound0.ogg'],
+        autoplay: true,
+        loop: true,
+    })
+
+
     score = 0
-    background.play()
+    sound.background.play()
 
         // SETTING HERO:SHIP
         ship.Position = new Vector2D(
@@ -202,7 +202,7 @@ function update()
             {
                 score += alien.Score
                 // sound.get('explosion-alien').play()
-                sound.play('explosion-alien')
+                sound.explosion.play('explosion-alien')
 
                 Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
                 Game.removeGameObjectArrayById(aliens, alien.Id)
@@ -283,7 +283,7 @@ function joystick()
             bullet.AddCoordSprite({x: 10, y: 8}, 4, 8)
 
         ship.AddBullets(bullet)
-        sound.play('laser')
+        sound.laser.play('laser')
 
     }
 
