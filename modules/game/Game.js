@@ -17,7 +17,7 @@ export default class Game
      * @param {boolean} running Racing game function control 
      * @param {boolean} cancelRequestAnimationFrame Control of the RequestAnimationFrame function
      */   
-    static Loop(func, framesPerSeconds = 60, running = true, cancelRequestAnimationFrame = false)
+    static loop(func, framesPerSeconds = 60, running = true, cancelRequestAnimationFrame = false)
     {   
         let clock = {
             enable: false, 

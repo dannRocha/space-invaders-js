@@ -5,7 +5,7 @@ export default class Moviment
 				throw new Error()	
     }
 
-    static Approach(goal, current, deltaTime)
+    static approach(goal, current, deltaTime)
     {
         let difference = goal - current
 

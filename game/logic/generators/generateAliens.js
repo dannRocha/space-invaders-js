@@ -41,7 +41,7 @@ export default function generateAliens()
                 alien.Sense = new Vector2D(1, 0)
 
                 // Sprite mapping: sprite 1
-                alien.AddCoordSprite
+                alien.addCoordSprite
                 (
                     {
                         x: coordSprite.x * 2,
@@ -50,7 +50,7 @@ export default function generateAliens()
                     8
                 )
                 // Sprite mapping: sprite 2
-                alien.AddCoordSprite
+                alien.addCoordSprite
                 (
                     {
                         x: (row * 16 - 8),

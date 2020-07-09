@@ -48,7 +48,7 @@ export default class Control
      * @param {string} event 
      * @param {function} func 
      */
-    static AddEvent(event, func, target)
+    static addEvent(event, func, target)
     {
         
         if(!!globalThis.__keyboardEventSetup)

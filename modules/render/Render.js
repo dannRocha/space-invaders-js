@@ -30,7 +30,7 @@ export default class Render
      * @param {number} dWidth Image display width size 
      * @param {number} dHeight Image display height size
      */
-    static DrawPicture( contextCanvas, image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) 
+    static drawPicture( contextCanvas, image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) 
     {
         if(!contextCanvas || !contextCanvas.canvas) 
             throw 'Error: "Render.DrawPicture" needs the canvas context to render'
@@ -52,9 +52,9 @@ export default class Render
      * @param {GameObject} gameobject 
      * @param {number} scale 
      */
-    static RenderGameObject(contextCanvas, spritesheet, gameobject, scale = 1.0)
+    static renderGameObject(contextCanvas, spritesheet, gameobject, scale = 1.0)
     {
-        Render.DrawPicture
+        Render.drawPicture
         (
             contextCanvas, spritesheet,
             gameobject.SpriteSheetCoordinates[gameobject.CurrentSprite].x,
@@ -74,7 +74,7 @@ export default class Render
      * @param {string} text Message to be displayed 
      * 
      */
-    static Text(contextCanvas, font, x, y, text)
+    static text(contextCanvas, font, x, y, text)
     {
         if(!contextCanvas || !contextCanvas.canvas) 
             throw 'Error: "Render.DrawPicture" needs the canvas context to render'
@@ -89,13 +89,13 @@ export default class Render
      * @param {CanvasRenderingContext2D} contextCanvas 
      * @param {string} color Hex color. Exemple: '#FFF'
      */
-    static BackgroundColor(contextCanvas, color)
+    static backgroundColor(contextCanvas, color)
     {
         contextCanvas.fillStyle = color
         contextCanvas.fillRect(0, 0, contextCanvas.canvas.width, contextCanvas.canvas.height)
     }
 
-    static Rect(contextCanvas, gameObject, color = '#FFF', lineWidth = 1)
+    static rect(contextCanvas, gameObject, color = '#FFF', lineWidth = 1)
     {
 
         contextCanvas.beginPath()

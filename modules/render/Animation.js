@@ -5,7 +5,7 @@ export default class Animation
 
     }
 
-    static Run(actor, time)
+    static run(actor, time)
     {
 
     }

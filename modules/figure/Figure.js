@@ -8,10 +8,10 @@ export default class Figure
      * 
      * @param {string} src Image path 
      */
-    static LoadImage(src)
+    static loadImage(src)
     {
         if(typeof(src) !== 'string') 
-            throw 'Error: "Figure.LoadImage" must be a string with the image path'
+            throw 'Error: "Figure.loadImage" must be a string with the image path'
 
         return new Promise((resolve, reject) => {
             
@@ -22,7 +22,7 @@ export default class Figure
                 resolve(image)
             }
             image.onerror = (err) => {
-                reject(`Error: "Figure.LoadImage", error when loading image. Path:${src}`)
+                reject(`Error: "Figure.loadImage", error when loading image. Path:${src}`)
             }
         })
     }

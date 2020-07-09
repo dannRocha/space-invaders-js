@@ -220,16 +220,16 @@ export default class GameObject
      * @param {Number} sizeWidth Sprite size
      * @param {Number} sizeHeight Sprite size, default: sizeWidth
      */
-    AddCoordSprite(coord, sizeWidth, sizeHeight = sizeWidth)
+    addCoordSprite(coord, sizeWidth, sizeHeight = sizeWidth)
     {
         if( typeof(coord) !== 'object' || !isValidSpriteSheetCoordinates(coord?.x, coord?.y))
         {
-            throw `Error: "${this.__name}.AddCoordSprite" defines a object value: {x, y}`
+            throw `Error: "${this.__name}.addCoordSprite" defines a object value: {x, y}`
         }
 
         if( !Numeric.isNumber(sizeWidth) || !Numeric.isNumber(sizeHeight) )
         {
-            throw new TypeError(`"SET" -> "${this.__name}.AddCoordSprite (objec, number, number)" must be a object and number`)
+            throw new TypeError(`"SET" -> "${this.__name}.addCoordSprite (objec, number, number)" must be a object and number`)
         }
         
         coord.sizeWidth  = sizeWidth

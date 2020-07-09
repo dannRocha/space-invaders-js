@@ -1,5 +1,5 @@
-import button from './button/Button.js'
-import frame from './frame/Frame.js'
+import _button from './button/Button.js'
+import _frame from './frame/Frame.js'
 
 export default class Component
 {
@@ -8,12 +8,12 @@ export default class Component
         throw new Error('class "Component" must not be instantiated')
     }
 
-    static Frame()
+    static frame()
     {
         // return frame
     }
 
-    static Button()
+    static button()
     {
         // return button
     }

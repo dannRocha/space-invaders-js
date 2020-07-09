@@ -12,7 +12,7 @@ export default class Collision
      * @param {GameObject} gameObject1 
      * @param {GameObject} gameObject2 
      */
-    static CollisionBetweenGameObject(item1, item2)
+    static collisionBetweenGameObject(item1, item2)
     {    
         return ( 
                ((item1.X + item1.Width) >= item2.X) 
@@ -23,7 +23,7 @@ export default class Collision
     
     }
 
-    static CollisionBetweenGameObjectAndMap()
+    static collisionBetweenGameObjectAndMap()
     {
 
 

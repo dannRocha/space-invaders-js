@@ -15,7 +15,7 @@ let sound   = new Object();
 
 async function setting()
 {
-    Env.Global.set('spritesheet', await Figure.LoadImage('../assets/img/invaders.png'))
+    Env.Global.set('spritesheet', await Figure.loadImage('../assets/img/invaders.png'))
 
     sound.laser = new Howl({
         src: [ '/assets/sound/laser_spaceship.wav', ],
@@ -47,7 +47,7 @@ async function setting()
         ship.Speed = new Vector2D(5, 0)
         ship.Lives = 3
         ship.Score = -1_000
-        ship.AddCoordSprite({x: 0, y: 8}, 8)
+        ship.addCoordSprite({x: 0, y: 8}, 8)
 
         // SETTING EMENY:BOSS
         boss.Position = new Vector2D(
@@ -60,7 +60,7 @@ async function setting()
         boss.Sense = new Vector2D(-1, 0)
         boss.Lives = 1
         boss.Score = 1_000
-        boss.AddCoordSprite({x: 24, y: 8}, 8)
+        boss.addCoordSprite({x: 24, y: 8}, 8)
 
         // SETTING EMENY:ALIENS
         aliens  = generateAliens() 
@@ -77,7 +77,7 @@ async function startUp()
 
     await setting()
 
-    Game.Loop(() => main(), framePerSeconds)
+    Game.loop(() => main(), framePerSeconds)
 
 }
 
@@ -93,33 +93,33 @@ function draw()
     const contextCanvas = Env.Global.get('context')
     const spritesheet   = Env.Global.get('spritesheet')
     
-    Render.BackgroundColor(contextCanvas, '#000')
+    Render.backgroundColor(contextCanvas, '#000')
     
     for(let alien of aliens)
     {
-        Render.RenderGameObject(contextCanvas, spritesheet, alien)
+        Render.renderGameObject(contextCanvas, spritesheet, alien)
     }
 
     for(let block of defense)
     {
-        Render.RenderGameObject(contextCanvas, spritesheet, block) 
+        Render.renderGameObject(contextCanvas, spritesheet, block) 
     }
     
     for(const bullet of ship.Bullets)
     {
-        Render.RenderGameObject(contextCanvas, spritesheet, bullet)
+        Render.renderGameObject(contextCanvas, spritesheet, bullet)
     }
 
     for(const bullet of alienBullets)
     {
-        Render.RenderGameObject(contextCanvas, spritesheet, bullet)
+        Render.renderGameObject(contextCanvas, spritesheet, bullet)
     }
     
-    Render.RenderGameObject(contextCanvas, spritesheet, boss)
-    Render.RenderGameObject(contextCanvas, spritesheet, ship)
+    Render.renderGameObject(contextCanvas, spritesheet, boss)
+    Render.renderGameObject(contextCanvas, spritesheet, ship)
 
 
-    Render.Text
+    Render.text
     (
         contextCanvas,                         // CONTEXT CANVAS
         { color: '#FFF', family: '7px serif'}, // FONT
@@ -163,7 +163,7 @@ function update()
         
         if(bullet.Y + bullet.Height < 0) ship.RemoveBullets()
         
-        if(Collision.CollisionBetweenGameObject(boss, bullet))
+        if(Collision.collisionBetweenGameObject(boss, bullet))
         {
             boss.Lives--
             score += boss.Score
@@ -181,7 +181,7 @@ function update()
 
         for(let block of defense)
         {
-            if(Collision.CollisionBetweenGameObject(bullet, block))
+            if(Collision.collisionBetweenGameObject(bullet, block))
             {   
                 block.Resistance--
                 block.CurrentSprite--
@@ -198,7 +198,7 @@ function update()
 
         for(let alien of aliens)
         {
-            if(Collision.CollisionBetweenGameObject(bullet, alien))
+            if(Collision.collisionBetweenGameObject(bullet, alien))
             {
                 score += alien.Score
                 // sound.get('explosion-alien').play()
@@ -228,7 +228,7 @@ function update()
         }
 
         // Check collision with alien bullets and spaceship
-        if(Collision.CollisionBetweenGameObject(bullet, ship))
+        if(Collision.collisionBetweenGameObject(bullet, ship))
         {
             Game.removeGameObjectArrayById(alienBullets, bullet.Id)
     
@@ -237,7 +237,7 @@ function update()
         // Check collision with alien bullets and defense
         for(let block of defense)
         {
-            if(Collision.CollisionBetweenGameObject(bullet, block))
+            if(Collision.collisionBetweenGameObject(bullet, block))
             {
                 Game.removeGameObjectArrayById(alienBullets, bullet.Id)
                 
@@ -280,7 +280,7 @@ function joystick()
             bullet.Height = 8
             bullet.Speed = new Vector2D(0, 8)
             bullet.Sense = new Vector2D(0, -1)
-            bullet.AddCoordSprite({x: 10, y: 8}, 4, 8)
+            bullet.addCoordSprite({x: 10, y: 8}, 4, 8)
 
         ship.AddBullets(bullet)
         sound.laser.play('laser')
@@ -304,7 +304,7 @@ function joystick()
             bullet.Height =  8
             bullet.Speed  =  new Vector2D(0, 8)
             bullet.Sense  =  new Vector2D(0, 1)
-            bullet.AddCoordSprite({x: 16, y: 8}, 8)
+            bullet.addCoordSprite({x: 16, y: 8}, 8)
 
             alienBullets.push(bullet)
             
