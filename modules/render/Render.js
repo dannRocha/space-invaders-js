@@ -104,4 +104,10 @@ export default class Render
         contextCanvas.rect(gameObject.X, gameObject.Y, gameObject.Width, gameObject.Height)
         contextCanvas.stroke()
     }
+
+    static fillRect(contextCanvas, gameObject, color = '#FFF')
+    {
+        contextCanvas.fillStyle = color
+        contextCanvas.fillRect(gameObject.X, gameObject.Y, gameObject.Width, gameObject.Height)
+    }
 }

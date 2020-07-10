@@ -2,7 +2,7 @@ import { Actor, Bullet } from './character/mod.js'
 import { generateAliens, generateDefense } from './logic/generators/mod.js'
 import { moveAliens } from './logic/moviment/mod.js'
 
-import { Collision, Control, Env, Figure, Game, Render, Vector2D, Sound } from '../modules/mod.js'
+import { Collision, Control, Env, Figure, Game, Render, Vector2D, GameObject } from '../modules/mod.js'
 
 let ship    = new Actor('Ship')
 let boss    = new Actor('Boss')
@@ -11,7 +11,9 @@ let defense = new Array()
 let alienBullets = new Array()
 let score   = null
 let sound   = new Object();
-
+let stage   = 0
+let pause   = false
+let controlTime = false
 
 async function setting()
 {
@@ -50,10 +52,7 @@ async function setting()
         ship.addCoordSprite({x: 0, y: 8}, 8)
 
         // SETTING EMENY:BOSS
-        boss.Position = new Vector2D(
-            Env.Global.get('screen').width, 
-            10
-        )
+        boss.Position = new Vector2D( Env.Global.get('screen').width, 10 )
         boss.Width = 8
         boss.Height= 8
         boss.Speed = new Vector2D( 8, 0)
@@ -85,8 +84,14 @@ function main()
 {
     joystick()
     draw()
-    update()
+
+    if( !pause )
+    {
+        logic()
+        update()
+    }
 }
+
 
 function draw()
 {
@@ -126,7 +131,76 @@ function draw()
         0, Env.Global.get('screen').width - 8, // POSITION
         `SCORE : ${score}`                     // MESSAGE
     )
+    
+    // Frame de mudança de "level"
+    if ( !aliens.length && !boss.Lives )
+    {
+        let Win = new GameObject('Window')
+            Win.Position = new Vector2D(0, 0)
+            Win.Width  = 300
+            Win.Height = 300
+        
+        const font1 = { color: '#FFF', family: '27px serif'} 
+        const font2 = { color: '#FFF', family: '47px serif'} 
+
+        Render.fillRect(contextCanvas, Win, '#000')
+
+        Render.text(contextCanvas, font1,
+            Win.Width / 3, Win.Height / 2, 
+            `Next Stage`
+        )
+
+        Render.text(contextCanvas, font2,
+            0, Win.Height / 4, 
+            `Stage ${stage}`
+        )
+    }
+
+    // Frame de "pause"
+    if ( pause )
+    {
+        let Win = new GameObject('Window')
+            Win.Position = new Vector2D(0, 0)
+            Win.Width  = 300
+            Win.Height = 300
+        
+        const font = { color: '#FFF', family: '27px serif'} 
+  
+        Render.fillRect(contextCanvas, Win, '#000')
+
+        Render.text(contextCanvas, font,
+            Win.Width / 3, Win.Height / 2, 
+            `Pause`
+        )
+
+    }
 }
+
+
+function logic()
+{
+    // Reiniciar e novo 'fase'
+    if( !aliens.length  && !boss.Lives  && !controlTime)
+    {
+        const milliseconds = 2000
+
+        setTimeout(() => {
+           
+            aliens = generateAliens()
+            boss.Position = new Vector2D( Env.Global.get('screen').width, 10 )
+            boss.Speed = new Vector2D( 8, 0 )
+            boss.Sense = new Vector2D(-1, 0 )
+            boss.Lives = 1
+
+            stage++
+            controlTime = !controlTime
+    
+        }, milliseconds )
+
+        controlTime = !controlTime
+    }
+}
+
 
 function update()
 {
@@ -147,6 +221,7 @@ function update()
             boss.Position, 
             Vector2D.scale(boss.Speed, boss.Sense)
         )
+
         if(boss.X < 0 || boss.X > Env.Global.get('screen').width - boss.Width)
             boss.Sense = Vector2D.scale(boss.Sense, new Vector2D(-1, 0))
 
@@ -253,61 +328,63 @@ function update()
     }
 }
 
+
 function joystick()
 {
     
-    if(Control.isDown('a', 'arrowleft')) 
+    if( Control.isDown( 'a', 'arrowleft' ) ) 
         ship.Sense = new Vector2D(-1, 0)
-    else if(Control.isDown('d', 'arrowright')) 
-        ship.Sense = new Vector2D( 1, 0)
+    else if(Control.isDown( 'd', 'arrowright' ) ) 
+        ship.Sense = new Vector2D( 1, 0 )
     else 
-        ship.Sense = Vector2D.scale(ship.Sense, 0)
+        ship.Sense = Vector2D.scale( ship.Sense, 0 )
     
     
-    if(Control.isDown('w', 'spacebar', 'arrowup'))
+    if( Control.isDown( 'w', 'spacebar', 'arrowup' ) )
     {   
         const SPACE_BETWEEN_BULLETS = 50
         
 
-        if(ship.Bullets[ship.Bullets.length - 1]?.Y  + SPACE_BETWEEN_BULLETS > ship.Y)
+        if( ship.Bullets[ship.Bullets.length - 1]?.Y  + SPACE_BETWEEN_BULLETS > ship.Y )
             return
 
         
 
-        let bullet = new Bullet('Bullet-Spaceship')
-            bullet.Position = new Vector2D(ship.X + 2, ship.Y)
+        let bullet = new Bullet( 'Bullet-Spaceship' )
+            bullet.Position = new Vector2D( ship.X + 2, ship.Y )
             bullet.Width  = 4
             bullet.Height = 8
-            bullet.Speed = new Vector2D(0, 8)
-            bullet.Sense = new Vector2D(0, -1)
-            bullet.addCoordSprite({x: 10, y: 8}, 4, 8)
+            bullet.Speed = new Vector2D( 0,  8 )
+            bullet.Sense = new Vector2D( 0, -1 )
+            bullet.addCoordSprite( { x: 10, y: 8 }, 4, 8 )
 
-        ship.AddBullets(bullet)
-        sound.laser.play('laser')
+        ship.AddBullets( bullet )
+        sound.laser.play( 'laser' )
 
     }
 
     
-    if(Control.isDown('x'))
+    if( Control.isDown('x') )
     {
-
         if( !aliens.length ) return
 
-        let index = parseInt(Math.random() * aliens.length)
+        let index = parseInt( Math.random() * aliens.length )
         
-        let bullet = new Bullet('Bullet-Aliens')
-            bullet.Position = new Vector2D(
-                aliens[index].X, 
-                aliens[index].Y
-            )
+        let bullet = new Bullet( 'Bullet-Aliens' )
+            bullet.Position = new Vector2D( aliens[index].X, aliens[index].Y )
             bullet.Width  =  3
             bullet.Height =  8
-            bullet.Speed  =  new Vector2D(0, 8)
-            bullet.Sense  =  new Vector2D(0, 1)
-            bullet.addCoordSprite({x: 16, y: 8}, 8)
+            bullet.Speed  =  new Vector2D( 0, 8 )
+            bullet.Sense  =  new Vector2D( 0, 1 )
+            bullet.addCoordSprite( {x: 16, y: 8}, 8 )
 
-            alienBullets.push(bullet)
+            alienBullets.push( bullet )
             
+    }
+    
+    if( Control.isDown('enter', 'p') )
+    {
+        pause = !pause
     }
 
 }

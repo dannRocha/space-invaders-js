@@ -2,7 +2,7 @@ export default class Numeric
 {
     constructor()
     {
-        throw 'class "Numeric" must not be instantiated'
+        throw new Error( 'class "Numeric" must not be instantiated' )
     }
     
     /**
@@ -11,11 +11,9 @@ export default class Numeric
      */
     static isNumber(value)
     {
-
-        if(typeof(value) !== 'number') return false
-        
-        return true
+        return typeof value === 'number'
     }  
+    
     /**
      * returns a random number between MAX_SAFE_INTEGER and MIN_SAFE_INTEGER
      */
