@@ -23,6 +23,7 @@ export default class Game
             enable: false, 
             value: 0.0
         }
+        Env.Global.set( 'framespersecons', framesPerSeconds )
 
         let now, elapsed
         let then = Date.now()
@@ -123,6 +124,48 @@ export default class Game
         
     }
 
+
+    /**
+     * 
+     * @param {function} func 
+     * @param {number} time seconds
+     */
+    static setInterval(func, time )
+    {
+
+        const MILLISECONDS = 1_000
+
+        if( typeof func !== 'function' )
+        {
+            throw new TypeError('"Game.setInterval": arg: func must be a function')
+        }
+
+
+        if( !Numeric.isNumber( time ) )
+        {
+            throw new TypeError('"Game.setInterval": arg: time must be a number' )
+        }
+
+        
+        if( !Env.Global.wasDefined('interval') )
+        {
+            Env.Global.set('interval', false )
+        }
+        
+
+        if( !Env.Global.get('interval') ) 
+        {
+            Env.Global.set('interval', true )
+
+            setTimeout(args => {
+                func( args )
+
+                Env.Global.set('interval', false )
+            }, MILLISECONDS * time )
+        }
+
+    }
+
     /**
      * 
      * @param {Number} time seconds 
@@ -148,4 +191,10 @@ export default class Game
     {
         return Env.Global.get('clock')
     }
+
+    static get FramesPerSeconds()
+    {
+        return Env.Global.get('framespersecons')
+    }
+
 }

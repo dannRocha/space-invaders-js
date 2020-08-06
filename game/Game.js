@@ -2,18 +2,21 @@ import { Actor, Bullet } from './character/mod.js'
 import { generateAliens, generateDefense } from './logic/generators/mod.js'
 import { moveAliens } from './logic/moviment/mod.js'
 
-import { Collision, Control, Env, Figure, Game, Render, Vector2D, GameObject } from '../modules/mod.js'
+import { Collision, Control, Env, Figure, Game, Render, Vector2D, GameObject, Animation } from '../modules/mod.js'
 
 let ship    = new Actor('Ship')
 let boss    = new Actor('Boss')
 let aliens  = new Array()
 let defense = new Array()
 let alienBullets = new Array()
-let score   = null
+let explosion = new Actor('Explosion')
 let sound   = new Object();
+let score   = null
 let stage   = 0
 let pause   = false
 let controlTime = false
+
+
 
 async function setting()
 {
@@ -59,7 +62,18 @@ async function setting()
         boss.Sense = new Vector2D(-1, 0)
         boss.Lives = 1
         boss.Score = 1_000
-        boss.addCoordSprite({x: 24, y: 8}, 8)
+        boss.addCoordSprite({x: 24, y: 8}, 8 )
+        
+        // SETTING EFFECT:EXPLOSION
+        explosion.Width = 8
+        explosion.Height = 8
+        explosion.Lives = 0
+        explosion.Position = new Vector2D(-10, 0)
+
+        for( let i = 1; i <= 6; i++ )
+            explosion.addCoordSprite({x: 24 + ( 8 * i ), y: 8}, explosion.Width )
+        
+
 
         // SETTING EMENY:ALIENS
         aliens  = generateAliens() 
@@ -119,9 +133,16 @@ function draw()
     {
         Render.renderGameObject(contextCanvas, spritesheet, bullet)
     }
+
+
     
-    Render.renderGameObject(contextCanvas, spritesheet, boss)
-    Render.renderGameObject(contextCanvas, spritesheet, ship)
+    Render.renderGameObject( contextCanvas, spritesheet, boss )
+    Render.renderGameObject( contextCanvas, spritesheet, ship )
+
+    if( explosion.Lives )
+    {
+        Render.renderGameObject( contextCanvas, spritesheet, explosion )
+    }
 
 
     Render.text
@@ -199,6 +220,29 @@ function logic()
 
         controlTime = !controlTime
     }
+
+
+    // Delay de tiros dos aliens
+
+    let DELAY = 1 - stage / 10
+
+    Game.setInterval(() => {
+
+        if( !aliens.length ) return
+
+        let index = parseInt( Math.random() * aliens.length )
+        
+        let bullet = new Bullet( 'Bullet-Aliens' )
+            bullet.Position = new Vector2D( aliens[index].X, aliens[index].Y )
+            bullet.Width  =  3
+            bullet.Height =  8
+            bullet.Speed  =  new Vector2D( 0, 8 )
+            bullet.Sense  =  new Vector2D( 0, 1 )
+            bullet.addCoordSprite( {x: 16, y: 8}, 8 )
+
+            alienBullets.push( bullet )
+
+    }, DELAY )
 }
 
 
@@ -206,6 +250,7 @@ function update()
 {
     
     moveAliens(aliens)
+
 
     if(ship.Sense.X || ship.Sense.Y)
     {
@@ -244,24 +289,27 @@ function update()
             score += boss.Score
             // sound.get('explosion-boss').play()
 
-            if(!boss.Lives)
+            if( !boss.Lives )
             {
+                explosion.Lives = 1
+                explosion.Position = new Vector2D( boss.X, boss.Y )
                 boss.Speed = new Vector2D(0, 0)
-                boss.Position = new Vector2D(Env.Global.get('screen').width)
+                boss.Position = new Vector2D( Env.Global.get('screen').width )
                 // sound.get('end-win').play()
             }
 
-            Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
+            Game.removeGameObjectArrayById( ship.Bullets, bullet.Id )
         }
+
 
         for(let block of defense)
         {
-            if(Collision.collisionBetweenGameObject(bullet, block))
+            if( Collision.collisionBetweenGameObject(bullet, block) )
             {   
                 block.Resistance--
                 block.CurrentSprite--
 
-                if(!block.Resistance)
+                if( !block.Resistance )
                 {
                     Game.removeGameObjectArrayById(defense, block.Id)
                 }
@@ -270,17 +318,19 @@ function update()
             }   
         }
     
-
-        for(let alien of aliens)
+        for( let alien of aliens )
         {
-            if(Collision.collisionBetweenGameObject(bullet, alien))
+            if( Collision.collisionBetweenGameObject(bullet, alien) )
             {
                 score += alien.Score
                 // sound.get('explosion-alien').play()
                 sound.explosion.play('explosion-alien')
 
+                explosion.Lives = 1
+                explosion.Position = new Vector2D( alien.X, alien.Y )
+
                 Game.removeGameObjectArrayById(ship.Bullets, bullet.Id)
-                Game.removeGameObjectArrayById(aliens, alien.Id)
+                Game.removeGameObjectArrayById(aliens, alien.Id )
                 
                 break
             }
@@ -326,15 +376,46 @@ function update()
             }   
         }
     }
+
+
+    for(const alien of aliens )
+    {
+        for(const block of defense )
+        {
+            if( Collision.collisionBetweenGameObject( alien, block ) )
+            {
+            
+                block.Resistance--
+                block.CurrentSprite--
+
+                if( !block.Resistance )
+                {
+                    Game.removeGameObjectArrayById(defense, block.Id)
+                }
+            }
+        }
+
+        const SECONDS = 1
+        Animation.run( alien, SECONDS ) 
+    }
+
+
+    if(explosion.Lives )
+    {
+        Animation.run(explosion, 0.1, () => {
+            explosion.Lives = 0
+        } )
+    }
+    
 }
 
 
 function joystick()
 {
     
-    if( Control.isDown( 'a', 'arrowleft' ) ) 
+    if( Control.isDown( 'a', 'arrowleft' ) && ship.X >= 8) 
         ship.Sense = new Vector2D(-1, 0)
-    else if(Control.isDown( 'd', 'arrowright' ) ) 
+    else if(Control.isDown( 'd', 'arrowright' ) && ship.X <= Env.Global.get('screen').width - 12) 
         ship.Sense = new Vector2D( 1, 0 )
     else 
         ship.Sense = Vector2D.scale( ship.Sense, 0 )
@@ -364,29 +445,12 @@ function joystick()
     }
 
     
-    if( Control.isDown('x') )
-    {
-        if( !aliens.length ) return
-
-        let index = parseInt( Math.random() * aliens.length )
-        
-        let bullet = new Bullet( 'Bullet-Aliens' )
-            bullet.Position = new Vector2D( aliens[index].X, aliens[index].Y )
-            bullet.Width  =  3
-            bullet.Height =  8
-            bullet.Speed  =  new Vector2D( 0, 8 )
-            bullet.Sense  =  new Vector2D( 0, 1 )
-            bullet.addCoordSprite( {x: 16, y: 8}, 8 )
-
-            alienBullets.push( bullet )
-            
-    }
-    
     if( Control.isDown('enter', 'p') )
     {
         pause = !pause
     }
 
 }
+
 
 export default startUp

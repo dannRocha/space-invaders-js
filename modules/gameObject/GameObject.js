@@ -36,6 +36,9 @@ export default class GameObject
         this.__speed = new Vector2D()
         this.__id = parseInt(Numeric.Random())
         this.__enable = true
+        this.__time = null
+        // this.__numberOfSprites = 0
+        this.__currentFrame = 0
         
         if(!name)
         {
@@ -123,12 +126,27 @@ export default class GameObject
         return this.__name
     }
 
-    set X(x)
+    get Time()
+    {
+        return this.__time
+    }
+
+    get NumberOfSprites()
+    {
+        return this.__spriteSheetCoordinates.length
+    }
+
+    get CurrentFrame()
+    {
+        return this.__currentFrame
+    }
+    
+    set X(_)
     {
         throw new Error(`${this.__name}.X cannot be defined. Change ${this.__name}.Position`)
     }
 
-    set Y(y)
+    set Y(_)
     {
         throw new Error(`${this.__name}.Y cannot be defined. Change ${this.__name}.Position`)
     }
@@ -214,6 +232,27 @@ export default class GameObject
 
         this.__enable = status
     }
+
+    set Time( time )
+    {
+        if( !Numeric.isNumber( time ) )
+        {
+            throw new TypeError( `"SET" -> "${this.__name}.Time" must be a number` )
+        }
+
+        this.__time = time
+    }
+
+    set CurrentFrame( currentFrame )
+    {
+        if( !Numeric.isNumber( currentFrame ) )
+        {
+            throw new TypeError( `"SET" -> "${this.__name}.CurrentFrame" must be a number` )
+        }
+
+        this.__currentFrame = currentFrame
+    }
+
     /**
      * 
      * @param {Object} coord "{x, y}": Sprite sheet coordinates 
