@@ -19,9 +19,9 @@ Usar alguns recursos novos do ES2020 e ES Modules da especificação ECMA-262.
 </p>
 
 
-## :join: Start
+## &#x1F477;&#x1F3FF;&#x200D;&#x2642;&#xFE0F; Start
 
-### :man_construction_worker_tone5: Repositorio
+### :file_folder: Repositorio
 ```sh
 git clone git@github.com:dannRocha/space-invaders-js.git
 ```
