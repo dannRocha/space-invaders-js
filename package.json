@@ -4,7 +4,7 @@
   "description": "![](https://img.shields.io/github/repo-size/dannrocha/space-invaders-js) ![](https://img.shields.io/github/license/dannrocha/space-invaders-js) ![](https://img.shields.io/github/last-commit/dannrocha/space-invaders-js) ![](https://img.shields.io/badge/daniel%20rocha-dev-green)",
   "main": "main.js",
   "scripts": {
-    "dev": "lite-server",
+    "start": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -30,9 +30,9 @@ git clone git@github.com:dannRocha/space-invaders-js.git
 ```sh
 npm install
 ```
-* *Inicalização do servidor de desenvolvimento*
+* *Inicalização do servidor*
 ```sh
-npm run dev
+npm start
 ```
 
 ### :surfer: Navegador
