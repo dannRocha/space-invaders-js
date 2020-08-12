@@ -1,0 +1,24 @@
+{
+  "name": "space-invaders-js",
+  "version": "1.0.0",
+  "description": "![](https://img.shields.io/github/repo-size/dannrocha/space-invaders-js) ![](https://img.shields.io/github/license/dannrocha/space-invaders-js) ![](https://img.shields.io/github/last-commit/dannrocha/space-invaders-js) ![](https://img.shields.io/badge/daniel%20rocha-dev-green)",
+  "main": "main.js",
+  "scripts": {
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannRocha/space-invaders-js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dannRocha/space-invaders-js/issues"
+  },
+  "homepage": "https://github.com/dannRocha/space-invaders-js#readme",
+  "devDependencies": {
+    "lite-server": "^2.5.4"
+  }
+}
