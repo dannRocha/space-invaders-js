@@ -4,21 +4,21 @@ import { moveAliens } from './logic/moviment/mod.js'
 
 import { Collision, Control, Env, Figure, Game, Render, Vector2D, GameObject, Animation } from '../modules/mod.js'
 
-let ship    = new Actor('Ship')
-let boss    = new Actor('Boss')
-let aliens  = new Array()
+let ship = new Actor('Ship')
+let boss = new Actor('Boss')
+let explosion = new Actor('Explosion')
+let aliens = new Array()
 let defense = new Array()
 let alienBullets = new Array()
-let explosion = new Actor('Explosion')
-let sound   = new Object();
-let score   = null
-let stage   = 0
-let pause   = false
+let sound = new Object();
+let score = 0
+let stage = 0
+let pause = false
 let controlTime = false
 
 
 
-async function setting()
+async function setup()
 {
     Env.Global.set('spritesheet', await Figure.loadImage('../assets/img/invaders.png'))
 
@@ -40,6 +40,7 @@ async function setting()
 
 
     score = 0
+    
     sound.background.play()
 
         // SETTING HERO:SHIP
@@ -54,6 +55,7 @@ async function setting()
         ship.Score = -1_000
         ship.addCoordSprite({x: 0, y: 8}, 8)
 
+
         // SETTING EMENY:BOSS
         boss.Position = new Vector2D( Env.Global.get('screen').width, 10 )
         boss.Width = 8
@@ -63,6 +65,7 @@ async function setting()
         boss.Lives = 1
         boss.Score = 1_000
         boss.addCoordSprite({x: 24, y: 8}, 8 )
+
         
         // SETTING EFFECT:EXPLOSION
         explosion.Width = 8
@@ -71,7 +74,7 @@ async function setting()
         explosion.Position = new Vector2D(-10, 0)
 
         for( let i = 1; i <= 6; i++ )
-            explosion.addCoordSprite({x: 24 + ( 8 * i ), y: 8}, explosion.Width )
+            explosion.addCoordSprite({x: 24 + ( explosion.Width * i ), y: explosion.Width}, explosion.Width )
         
 
 
@@ -83,12 +86,12 @@ async function setting()
         
 }
 
-async function startUp()
+async function init()
 {
 
     const framePerSeconds = 30
 
-    await setting()
+    await setup()
 
     Game.loop(() => main(), framePerSeconds)
 
@@ -111,23 +114,28 @@ function draw()
 {
     const contextCanvas = Env.Global.get('context')
     const spritesheet   = Env.Global.get('spritesheet')
+
     
     Render.backgroundColor(contextCanvas, '#000')
+
     
-    for(let alien of aliens)
+    for(const alien of aliens)
     {
         Render.renderGameObject(contextCanvas, spritesheet, alien)
     }
 
-    for(let block of defense)
+
+    for(const block of defense)
     {
         Render.renderGameObject(contextCanvas, spritesheet, block) 
     }
+
     
     for(const bullet of ship.Bullets)
     {
         Render.renderGameObject(contextCanvas, spritesheet, bullet)
     }
+
 
     for(const bullet of alienBullets)
     {
@@ -138,6 +146,7 @@ function draw()
     
     Render.renderGameObject( contextCanvas, spritesheet, boss )
     Render.renderGameObject( contextCanvas, spritesheet, ship )
+
 
     if( explosion.Lives )
     {
@@ -224,7 +233,7 @@ function logic()
 
     // Delay de tiros dos aliens
 
-    let DELAY = 1 - stage / 10
+    let delay = 1 - stage / 10
 
     Game.setInterval(() => {
 
@@ -242,7 +251,7 @@ function logic()
 
             alienBullets.push( bullet )
 
-    }, DELAY )
+    }, delay )
 }
 
 
@@ -259,6 +268,7 @@ function update()
             Vector2D.scale(ship.Speed, ship.Sense)
         )
     }
+
     
     if(boss.Sense.X || boss.Sense.Y)
     {
@@ -273,7 +283,7 @@ function update()
     }
 
 
-    for(const bullet of [ ...ship.Bullets ])
+    for(const bullet of ship.Bullets )
     {
         
         bullet.Position = Vector2D.sum( 
@@ -302,7 +312,7 @@ function update()
         }
 
 
-        for(let block of defense)
+        for(const block of defense)
         {
             if( Collision.collisionBetweenGameObject(bullet, block) )
             {   
@@ -318,7 +328,7 @@ function update()
             }   
         }
     
-        for( let alien of aliens )
+        for(const alien of aliens)
         {
             if( Collision.collisionBetweenGameObject(bullet, alien) )
             {
@@ -342,10 +352,10 @@ function update()
     {
 
         bullet.Position = Vector2D.sum(
-            bullet.Position, 
+            bullet.Position,
             Vector2D.scale(bullet.Speed, bullet.Sense)
         )
-
+        
         // Remove bullet when leaving the canvas boundaries
         if(bullet.Y >= Env.Global.get('screen').height)
         {
@@ -360,7 +370,7 @@ function update()
         }
 
         // Check collision with alien bullets and defense
-        for(let block of defense)
+        for(const block of defense)
         {
             if(Collision.collisionBetweenGameObject(bullet, block))
             {
@@ -453,4 +463,4 @@ function joystick()
 }
 
 
-export default startUp
+export default init
