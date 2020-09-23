@@ -50,17 +50,17 @@ async function setup()
         )
         ship.Width = 8
         ship.Height= 8
-        ship.Speed = new Vector2D(5, 0)
+        ship.Speed = new Vector2D(215, 0)
         ship.Lives = 3
         ship.Score = -1_000
         ship.addCoordSprite({x: 0, y: 8}, 8)
 
 
         // SETTING EMENY:BOSS
-        boss.Position = new Vector2D( Env.Global.get('screen').width, 10 )
+        boss.Position = new Vector2D( Env.Global.get('screen').width - 8, 10 )
         boss.Width = 8
         boss.Height= 8
-        boss.Speed = new Vector2D( 8, 0)
+        boss.Speed = new Vector2D( 250, 0)
         boss.Sense = new Vector2D(-1, 0)
         boss.Lives = 1
         boss.Score = 1_000
@@ -89,7 +89,7 @@ async function setup()
 async function init()
 {
 
-    const framePerSeconds = 30
+    const framePerSeconds = 60
 
     await setup()
 
@@ -105,7 +105,7 @@ function main()
     if( !pause )
     {
         logic()
-        update()
+        update(Env.Global.get('clock').deltaTime)
     }
 }
 
@@ -218,7 +218,7 @@ function logic()
            
             aliens = generateAliens()
             boss.Position = new Vector2D( Env.Global.get('screen').width, 10 )
-            boss.Speed = new Vector2D( 8, 0 )
+            boss.Speed = new Vector2D( 250, 0 )
             boss.Sense = new Vector2D(-1, 0 )
             boss.Lives = 1
 
@@ -245,7 +245,7 @@ function logic()
             bullet.Position = new Vector2D( aliens[index].X, aliens[index].Y )
             bullet.Width  =  3
             bullet.Height =  8
-            bullet.Speed  =  new Vector2D( 0, 8 )
+            bullet.Speed  =  new Vector2D( 0, 250 )
             bullet.Sense  =  new Vector2D( 0, 1 )
             bullet.addCoordSprite( {x: 16, y: 8}, 8 )
 
@@ -255,17 +255,16 @@ function logic()
 }
 
 
-function update()
+function update( deltaTime )
 {
     
-    moveAliens(aliens)
-
+    moveAliens(aliens, deltaTime)
 
     if(ship.Sense.X || ship.Sense.Y)
     {
         ship.Position = Vector2D.sum(
             ship.Position,
-            Vector2D.scale(ship.Speed, ship.Sense)
+            Vector2D.scale(Vector2D.scale(ship.Speed, ship.Sense), deltaTime)
         )
     }
 
@@ -274,10 +273,10 @@ function update()
     {
         boss.Position = Vector2D.sum(
             boss.Position, 
-            Vector2D.scale(boss.Speed, boss.Sense)
+            Vector2D.scale(Vector2D.scale(boss.Speed, boss.Sense), deltaTime)
         )
 
-        if(boss.X < 0 || boss.X > Env.Global.get('screen').width - boss.Width)
+        if(boss.X < -8 || boss.X > Env.Global.get('screen').width)
             boss.Sense = Vector2D.scale(boss.Sense, new Vector2D(-1, 0))
 
     }
@@ -287,8 +286,8 @@ function update()
     {
         
         bullet.Position = Vector2D.sum( 
-            bullet.Position, 
-            Vector2D.scale(bullet.Speed, bullet.Sense )
+            bullet.Position,
+						Vector2D.scale(Vector2D.scale(bullet.Speed, bullet.Sense), deltaTime)
         )
         
         if(bullet.Y + bullet.Height < 0) ship.RemoveBullets()
@@ -353,7 +352,7 @@ function update()
 
         bullet.Position = Vector2D.sum(
             bullet.Position,
-            Vector2D.scale(bullet.Speed, bullet.Sense)
+            Vector2D.scale(Vector2D.scale(bullet.Speed, bullet.Sense), deltaTime)
         )
         
         // Remove bullet when leaving the canvas boundaries
@@ -365,8 +364,7 @@ function update()
         // Check collision with alien bullets and spaceship
         if(Collision.collisionBetweenGameObject(bullet, ship))
         {
-            Game.removeGameObjectArrayById(alienBullets, bullet.Id)
-    
+            Game.removeGameObjectArrayById(alienBullets, bullet.Id) 
         }
 
         // Check collision with alien bullets and defense
@@ -445,7 +443,7 @@ function joystick()
             bullet.Position = new Vector2D( ship.X + 2, ship.Y )
             bullet.Width  = 4
             bullet.Height = 8
-            bullet.Speed = new Vector2D( 0,  8 )
+            bullet.Speed = new Vector2D( 0,  200 )
             bullet.Sense = new Vector2D( 0, -1 )
             bullet.addCoordSprite( { x: 10, y: 8 }, 4, 8 )
 
