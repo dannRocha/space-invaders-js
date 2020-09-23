@@ -21,14 +21,19 @@ export default class Game
     {   
         let clock = {
             enable: false, 
-            value: 0.0
+            value: 0.0,
+            deltaTime: 0.0,
         }
+        
         Env.Global.set( 'framespersecons', framesPerSeconds )
 
         let now, elapsed
-        let then = Date.now()
+        let then = window.performance.now()
         let framesPerSecondsInterval = 1000 / framesPerSeconds
         let IDOfAnimation = null
+        let end = window.performance.now()
+        let start = 0
+        let deltaTime = 0
 
         if(!func || typeof(func) !== 'function') throw '"Game.Loop" function receives a mandatory function as a parameter'
         if(!Numeric.isNumber(framesPerSeconds)) throw '"framesperseconds" in "Game.Loop" must be numeric'
@@ -38,6 +43,7 @@ export default class Game
             
             clock.enable = running
             clock.value = timer
+            clock.deltaTime = deltaTime
             Env.Global.set('clock', {...clock})
             
             IDOfAnimation = requestAnimationFrame(__loop)
@@ -48,17 +54,24 @@ export default class Game
             }
 
             //Limit FPS
-            now = Date.now()
+            now = window.performance.now()
             elapsed = now - then
 
             if(elapsed > framesPerSecondsInterval)
             {
                 then = now - (elapsed % framesPerSecondsInterval)
+
+                start = end
+                end = window.performance.now()
+                
                 if(running)
                 {
                     // running the game
                     func()
                 }
+
+                deltaTime = (end - start) / 1_000
+
             }
 
         }
