@@ -62,13 +62,13 @@ export default class Game
                 then = now - (elapsed % framesPerSecondsInterval)
 
                 start = end
-                end = window.performance.now()
                 
                 if(running)
                 {
                     // running the game
                     func()
                 }
+                end = window.performance.now()
 
                 deltaTime = (end - start) / 1_000
 
