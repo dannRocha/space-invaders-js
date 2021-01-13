@@ -14,8 +14,7 @@ Usar alguns recursos novos do ES2020 e ES Modules da especificação ECMA-262.
 
 ## :tv: Demo
 <p align="center">
-  <img src="assets/img/demo.gif" /> 
-  <strong>O gif da demo tem por volta de 4mb, caso não seja exibido recarregue a página.</strong>
+  <img src="assets/img/demo.gif" />
 </p>
 
 
