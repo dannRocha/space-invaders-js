@@ -9,7 +9,7 @@ Implementação do jogo ***Space Invaders*** em JavaScript.
 
 ## :dart: Objetivo
 
-Usar alguns recursos novos do ES2020 e ES Modules da especificação ECMA-262.
+Usar alguns recursos do ES2020 e ES Modules da especificação ECMA-262.
 
 
 ## :tv: Demo
@@ -35,7 +35,7 @@ git clone git@github.com:dannRocha/space-invaders-js.git
 ```sh
 npm install
 ```
-* *Inicalização do servidor*
+* *Inicialização do servidor*
 ```sh
 npm start
 ```
